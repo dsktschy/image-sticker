@@ -1,0 +1,9 @@
+.husky/
+dist/
+node_modules/
+web-ext-artifacts/
+.gitignore
+.prettierignore
+LICENSE
+package-lock.json
+*.png

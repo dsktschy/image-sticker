@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Web-ext build output
+web-ext-artifacts/
+
+# Visual Studio Code
+.vscode/

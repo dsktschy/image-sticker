@@ -1,5 +1,5 @@
 {
-  "name": "sticker",
+  "name": "image-sticker",
   "version": "0.0.0",
   "description": "An extension to put images on web pages like stickers",
   "scripts": {
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dsktschy/sticker.git"
+    "url": "git+https://github.com/dsktschy/image-sticker.git"
   },
   "author": "dsktschy (https://github.com/dsktschy)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dsktschy/sticker/issues"
+    "url": "https://github.com/dsktschy/image-sticker/issues"
   },
-  "homepage": "https://github.com/dsktschy/sticker#readme",
+  "homepage": "https://github.com/dsktschy/image-sticker#readme",
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/react": "^17.0.2",

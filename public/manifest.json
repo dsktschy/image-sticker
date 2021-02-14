@@ -1,5 +1,5 @@
 {
-  "name": "sticker",
+  "name": "image-sticker",
   "description": "An extension to put images on web pages like stickers",
   "version": "0.0.0",
   "manifest_version": 2,

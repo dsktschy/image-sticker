@@ -1,1 +1,1 @@
-# Sticker
+# Image Sticker

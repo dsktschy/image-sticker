@@ -13,6 +13,7 @@ module.exports = {
   devtool: 'inline-cheap-source-map',
 
   entry: {
+    content_script: path.resolve(__dirname, 'src/content_script.tsx'),
     default_popup: path.resolve(__dirname, 'src/default_popup.tsx')
   },
 
@@ -42,6 +43,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
+      chunks: ['default_popup'],
       filename: 'default_popup.html',
       title: 'Image Sticker'
     }),

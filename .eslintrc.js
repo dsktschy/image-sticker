@@ -16,6 +16,9 @@ module.exports = {
     sourceType: 'module',
     project: 'tsconfig.json'
   },
-  plugins: ['@typescript-eslint'],
-  rules: {}
+  plugins: ['@typescript-eslint', 'react-hooks'],
+  rules: {
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn'
+  }
 }

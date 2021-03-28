@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useStickerObjectListContext } from '../contexts/StickerObjectList'
 import {
   initializeContentScript,
-  OnMessageCallback
+  HandleMessageCallback
 } from '../models/ContentScript'
 
 type UseContentScript = () => void
@@ -10,7 +10,7 @@ type UseContentScript = () => void
 export const useContentScript: UseContentScript = () => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
-  const addStickerList = useCallback<OnMessageCallback>(
+  const addStickerObject = useCallback<HandleMessageCallback>(
     stickerObject => {
       stickerObjectListDispatch({ type: 'add', payload: stickerObject })
     },
@@ -18,6 +18,6 @@ export const useContentScript: UseContentScript = () => {
   )
 
   useEffect(() => {
-    return initializeContentScript(addStickerList)
-  }, [addStickerList])
+    return initializeContentScript(addStickerObject)
+  }, [addStickerObject])
 }

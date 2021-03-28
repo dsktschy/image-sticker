@@ -1,6 +1,6 @@
 import React, { FC, ReactEventHandler } from 'react'
 import styled from 'styled-components'
-import Moveable, { OnDrag, OnDragStart } from 'react-moveable'
+import Moveable, { OnDrag, OnDragEnd, OnDragStart } from 'react-moveable'
 import { useSticker } from '../hooks/Sticker'
 import { StickerObject } from '../lib/StickerObject'
 
@@ -9,6 +9,7 @@ type PresentationalSticker = FC<{
   generatedClassName?: string
   height: number
   onDrag: (event: OnDrag) => void
+  onDragEnd: (event: OnDragEnd) => void
   onDragStart: (event: OnDragStart) => void
   onLoad: ReactEventHandler<HTMLImageElement>
   sized: boolean
@@ -22,6 +23,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     className = '',
     generatedClassName = className.split(' ')[1],
     onDrag,
+    onDragEnd,
     onDragStart,
     onLoad,
     sized,
@@ -39,8 +41,9 @@ export const PresentationalSticker = styled<PresentationalSticker>(
       {sized && (
         <Moveable
           draggable
-          onDragStart={onDragStart}
           onDrag={onDrag}
+          onDragEnd={onDragEnd}
+          onDragStart={onDragStart}
           target={targetRef}
         />
       )}
@@ -58,12 +61,14 @@ export const PresentationalSticker = styled<PresentationalSticker>(
 `
 
 type Sticker = FC<{
+  offsetPositionCallback: (stickerObject: StickerObject) => void
   stickerObject: StickerObject
 }>
 
-export const Sticker: Sticker = ({ stickerObject }) => {
+export const Sticker: Sticker = ({ offsetPositionCallback, stickerObject }) => {
   const {
     height,
+    offsetPosition,
     setCurrentTranslate,
     setSize,
     setStartTranslate,
@@ -72,6 +77,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
     targetRef,
     width
   } = useSticker({
+    offsetPositionCallback,
     stickerObject
   })
 
@@ -79,6 +85,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
     <PresentationalSticker
       height={height}
       onDrag={setCurrentTranslate}
+      onDragEnd={offsetPosition}
       onDragStart={setStartTranslate}
       onLoad={setSize}
       sized={sized}

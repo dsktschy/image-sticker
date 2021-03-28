@@ -19,3 +19,14 @@ export const createStickerObject = (
     left: document.documentElement.clientWidth / 2
   }
 })
+
+export const offsetStickerObjectPosition = (
+  stickerObject: StickerObject,
+  x: number,
+  y: number
+): StickerObject => {
+  const offsetPosition = { ...stickerObject.position }
+  offsetPosition.top += y
+  offsetPosition.left += x
+  return { ...stickerObject, position: offsetPosition }
+}

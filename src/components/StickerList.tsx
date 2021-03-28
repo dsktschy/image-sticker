@@ -7,6 +7,7 @@ import { StickerObject } from '../lib/StickerObject'
 type PresentationalStickerList = FC<{
   className?: string
   generatedClassName?: string
+  offsetStickerPositionCallback: (stickerObject: StickerObject) => void
   stickerObjectList: StickerObject[]
 }>
 
@@ -14,6 +15,7 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
   ({
     className = '',
     generatedClassName = className.split(' ')[1],
+    offsetStickerPositionCallback,
     stickerObjectList
   }) => (
     <div className={className}>
@@ -22,7 +24,10 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
           className={`${generatedClassName}__sticker`}
           key={stickerObject.id}
         >
-          <Sticker stickerObject={stickerObject} />
+          <Sticker
+            offsetPositionCallback={offsetStickerPositionCallback}
+            stickerObject={stickerObject}
+          />
         </div>
       ))}
     </div>
@@ -49,7 +54,12 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
 type StickerList = FC
 
 export const StickerList: StickerList = () => {
-  const { stickerObjectList } = useStickerList()
+  const { stickerObjectList, updateStickerObject } = useStickerList()
 
-  return <PresentationalStickerList stickerObjectList={stickerObjectList} />
+  return (
+    <PresentationalStickerList
+      offsetStickerPositionCallback={updateStickerObject}
+      stickerObjectList={stickerObjectList}
+    />
+  )
 }

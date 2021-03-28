@@ -2,29 +2,27 @@ import { browser } from 'webextension-polyfill-ts'
 import { MessageObject } from '../lib/MessageObject'
 import { createStickerObject, StickerObject } from '../lib/StickerObject'
 
-export type OnMessage = (stickerObject: StickerObject) => void
+export type OnMessageCallback = (stickerObject: StickerObject) => void
 
-type CreateOnMessageCallback = (props: {
-  onMessage: OnMessage
-}) => (messageObject: MessageObject) => void
+type CreateOnMessage = (
+  onMessageCallback: OnMessageCallback
+) => (messageObject: MessageObject) => void
 
-const createOnMessageCallback: CreateOnMessageCallback = ({
-  onMessage
-}) => messageObject => {
+const createOnMessage: CreateOnMessage = onMessageCallback => messageObject => {
   if (typeof document === 'undefined') throw new Error('NoDocumentError')
   const stickerObject = createStickerObject(messageObject, document)
-  onMessage(stickerObject)
+  onMessageCallback(stickerObject)
 }
 
-type InitializeContentScript = (props: { onMessage: OnMessage }) => () => void
+type InitializeContentScript = (
+  onMessageCallback: OnMessageCallback
+) => () => void
 
-export const initializeContentScript: InitializeContentScript = ({
-  onMessage
-}) => {
-  const onMessageCallback = createOnMessageCallback({ onMessage })
+export const initializeContentScript: InitializeContentScript = onMessageCallback => {
+  const onMessage = createOnMessage(onMessageCallback)
   const runtimeOnMessage = browser.runtime.onMessage
-  runtimeOnMessage.addListener(onMessageCallback)
+  runtimeOnMessage.addListener(onMessage)
   return () => {
-    runtimeOnMessage.removeListener(onMessageCallback)
+    runtimeOnMessage.removeListener(onMessage)
   }
 }

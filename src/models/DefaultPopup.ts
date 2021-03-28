@@ -26,7 +26,7 @@ const sendMessage: SendMessage = async result => {
   }
 }
 
-type TrySendingMessage = (event: { target: FileReader | null }) => void
+type TrySendingMessage = (event: ProgressEvent<FileReader>) => void
 
 const trySendingMessage: TrySendingMessage = ({ target }) => {
   if (!target) return

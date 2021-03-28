@@ -54,8 +54,13 @@ export type ReadFileList = (event: {
 }) => void
 
 export const readFileList: ReadFileList = ({ currentTarget }) => {
-  if (!fileReader) return
   const fileList = currentTarget.files
-  if (!fileList) return
+  if (!fileReader || !fileList) {
+    // https://stackoverflow.com/questions/26634616/
+    currentTarget.value = ''
+    return
+  }
   Array.from(fileList).forEach(fileReader.readAsDataURL.bind(fileReader))
+  // https://stackoverflow.com/questions/26634616/
+  currentTarget.value = ''
 }

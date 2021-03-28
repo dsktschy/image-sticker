@@ -1,6 +1,6 @@
-import { Message } from './Message'
+import { MessageObject } from './MessageObject'
 
-export interface Sticker {
+export interface StickerObject {
   id: number
   position: {
     top: number
@@ -9,11 +9,11 @@ export interface Sticker {
   src: string
 }
 
-export const createSticker = (
-  message: Message,
+export const createStickerObject = (
+  messageObject: MessageObject,
   document: Document
-): Sticker => ({
-  ...message,
+): StickerObject => ({
+  ...messageObject,
   position: {
     top: document.documentElement.clientHeight / 2,
     left: document.documentElement.clientWidth / 2

@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { StickerListContextProvider } from './contexts/StickerList'
+import { StickerObjectListContextProvider } from './contexts/StickerObjectList'
 import { ContentScript } from './components/ContentScript'
 
 const App = () => (
-  <StickerListContextProvider>
+  <StickerObjectListContextProvider>
     <ContentScript />
-  </StickerListContextProvider>
+  </StickerObjectListContextProvider>
 )
 
 const divEl = document.createElement('div')

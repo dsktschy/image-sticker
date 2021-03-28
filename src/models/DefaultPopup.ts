@@ -1,5 +1,5 @@
 import { browser, Tabs } from 'webextension-polyfill-ts'
-import { createMessage } from '../lib/Message'
+import { createMessageObject } from '../lib/MessageObject'
 
 let fileReader: FileReader | null = null
 
@@ -15,11 +15,11 @@ const sendMessage: SendMessage = async result => {
   } catch (error) {
     throw new Error('TabsQueryingError')
   }
-  const message = createMessage(result)
+  const messageObject = createMessageObject(result)
   for (const tab of tabList) {
     if (typeof tab.id !== 'number') continue
     try {
-      await browser.tabs.sendMessage(tab.id, message)
+      await browser.tabs.sendMessage(tab.id, messageObject)
     } catch (error) {
       throw new Error('MessageSendingError')
     }

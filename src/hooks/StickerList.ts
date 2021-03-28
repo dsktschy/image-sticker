@@ -1,14 +1,14 @@
-import { useStickerListContext } from '../contexts/StickerList'
-import { Sticker } from '../lib/Sticker'
+import { useStickerObjectListContext } from '../contexts/StickerObjectList'
+import { StickerObject } from '../lib/StickerObject'
 
 type UseStickerList = () => {
-  stickerList: Sticker[]
+  stickerObjectList: StickerObject[]
 }
 
 export const useStickerList: UseStickerList = () => {
-  const [stickerList] = useStickerListContext()
+  const [stickerObjectList] = useStickerObjectListContext()
 
   return {
-    stickerList
+    stickerObjectList
   }
 }

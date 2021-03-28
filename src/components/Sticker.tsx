@@ -2,7 +2,7 @@ import React, { FC, ReactEventHandler } from 'react'
 import styled from 'styled-components'
 import Moveable, { OnDrag, OnDragStart } from 'react-moveable'
 import { useSticker } from '../hooks/Sticker'
-import { Sticker as StickerObject } from '../lib/Sticker'
+import { StickerObject } from '../lib/StickerObject'
 
 type PresentationalSticker = FC<{
   className?: string
@@ -58,10 +58,10 @@ export const PresentationalSticker = styled<PresentationalSticker>(
 `
 
 type Sticker = FC<{
-  sticker: StickerObject
+  stickerObject: StickerObject
 }>
 
-export const Sticker: Sticker = ({ sticker }) => {
+export const Sticker: Sticker = ({ stickerObject }) => {
   const {
     height,
     setCurrentTranslate,
@@ -72,7 +72,7 @@ export const Sticker: Sticker = ({ sticker }) => {
     targetRef,
     width
   } = useSticker({
-    sticker
+    stickerObject
   })
 
   return (

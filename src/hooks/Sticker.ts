@@ -7,10 +7,10 @@ import {
   useState
 } from 'react'
 import { OnDrag, OnDragStart } from 'react-moveable'
-import { Sticker } from '../lib/Sticker'
+import { StickerObject } from '../lib/StickerObject'
 
 type UseSticker = (props: {
-  sticker: Sticker
+  stickerObject: StickerObject
 }) => {
   height: number
   setCurrentTranslate: (event: OnDrag) => void
@@ -22,7 +22,7 @@ type UseSticker = (props: {
   width: number
 }
 
-export const useSticker: UseSticker = ({ sticker }) => {
+export const useSticker: UseSticker = ({ stickerObject }) => {
   const targetRef = useRef<HTMLImageElement>(null)
 
   const [width, setWidth] = useState(0)
@@ -63,7 +63,7 @@ export const useSticker: UseSticker = ({ sticker }) => {
     setSize,
     setStartTranslate,
     sized,
-    src: sticker.src,
+    src: stickerObject.src,
     targetRef,
     width
   }

@@ -1,17 +1,17 @@
 import { useCallback, useEffect } from 'react'
-import { useStickerListContext } from '../contexts/StickerList'
+import { useStickerObjectListContext } from '../contexts/StickerObjectList'
 import { initializeContentScript, OnMessage } from '../models/ContentScript'
 
 type UseContentScript = () => void
 
 export const useContentScript: UseContentScript = () => {
-  const [, stickerListDispatch] = useStickerListContext()
+  const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
   const addStickerList = useCallback<OnMessage>(
-    ({ stickerList }) => {
-      stickerListDispatch({ type: 'add', payload: { stickerList } })
+    ({ stickerObjectList }) => {
+      stickerObjectListDispatch({ type: 'add', payload: { stickerObjectList } })
     },
-    [stickerListDispatch]
+    [stickerObjectListDispatch]
   )
 
   useEffect(() => {

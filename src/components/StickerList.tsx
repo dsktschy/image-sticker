@@ -2,24 +2,27 @@ import React, { FC } from 'react'
 import styled from 'styled-components'
 import { Sticker } from './Sticker'
 import { useStickerList } from '../hooks/StickerList'
-import { Sticker as StickerObject } from '../lib/Sticker'
+import { StickerObject } from '../lib/StickerObject'
 
 type PresentationalStickerList = FC<{
   className?: string
   generatedClassName?: string
-  stickerList: StickerObject[]
+  stickerObjectList: StickerObject[]
 }>
 
 export const PresentationalStickerList = styled<PresentationalStickerList>(
   ({
     className = '',
     generatedClassName = className.split(' ')[1],
-    stickerList
+    stickerObjectList
   }) => (
     <div className={className}>
-      {stickerList.map(sticker => (
-        <div className={`${generatedClassName}__sticker`} key={sticker.id}>
-          <Sticker sticker={sticker} />
+      {stickerObjectList.map(stickerObject => (
+        <div
+          className={`${generatedClassName}__sticker`}
+          key={stickerObject.id}
+        >
+          <Sticker stickerObject={stickerObject} />
         </div>
       ))}
     </div>
@@ -33,10 +36,10 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
 
     ${
       // prettier-ignore
-      ({ stickerList }) => stickerList.map((sticker, index) => `
+      ({ stickerObjectList }) => stickerObjectList.map((stickerObject, index) => `
         &:nth-child(${index + 1}) {
-          top: ${sticker.position.top}px;
-          left: ${sticker.position.left}px;
+          top: ${stickerObject.position.top}px;
+          left: ${stickerObject.position.left}px;
         }
       `).join()
     }
@@ -46,7 +49,7 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
 type StickerList = FC
 
 export const StickerList: StickerList = () => {
-  const { stickerList } = useStickerList()
+  const { stickerObjectList } = useStickerList()
 
-  return <PresentationalStickerList stickerList={stickerList} />
+  return <PresentationalStickerList stickerObjectList={stickerObjectList} />
 }

@@ -2,7 +2,7 @@ import { browser } from 'webextension-polyfill-ts'
 import { MessageObject } from '../lib/MessageObject'
 import { createStickerObject, StickerObject } from '../lib/StickerObject'
 
-export type OnMessage = (props: { stickerObjectList: StickerObject[] }) => void
+export type OnMessage = (stickerObject: StickerObject) => void
 
 type CreateOnMessageCallback = (props: {
   onMessage: OnMessage
@@ -12,8 +12,8 @@ const createOnMessageCallback: CreateOnMessageCallback = ({
   onMessage
 }) => messageObject => {
   if (typeof document === 'undefined') throw new Error('NoDocumentError')
-  const stickerObjectList = [createStickerObject(messageObject, document)]
-  onMessage({ stickerObjectList })
+  const stickerObject = createStickerObject(messageObject, document)
+  onMessage(stickerObject)
 }
 
 type InitializeContentScript = (props: { onMessage: OnMessage }) => () => void

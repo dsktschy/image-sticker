@@ -8,8 +8,8 @@ export const useContentScript: UseContentScript = () => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
   const addStickerList = useCallback<OnMessage>(
-    ({ stickerObjectList }) => {
-      stickerObjectListDispatch({ type: 'add', payload: { stickerObjectList } })
+    stickerObject => {
+      stickerObjectListDispatch({ type: 'add', payload: stickerObject })
     },
     [stickerObjectListDispatch]
   )

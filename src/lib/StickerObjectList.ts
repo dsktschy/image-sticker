@@ -1,14 +1,12 @@
 import { StickerObject } from './StickerObject'
 
-export const addStickerObjectList = (
-  addedStickerObjectList: StickerObject[],
-  stickerObjectList: StickerObject[]
-): StickerObject[] => [...stickerObjectList, ...addedStickerObjectList]
+export const addToStickerObjectList = (
+  stickerObjectList: StickerObject[],
+  stickerObject: StickerObject
+): StickerObject[] => [...stickerObjectList, stickerObject]
 
-export const removeStickerObjectList = (
-  removedStickerObjectList: StickerObject[],
-  stickerObjectList: StickerObject[]
+export const removeFromStickerObjectList = (
+  stickerObjectList: StickerObject[],
+  stickerObject: StickerObject
 ): StickerObject[] =>
-  stickerObjectList.filter(
-    stickerObject => !removedStickerObjectList.includes(stickerObject)
-  )
+  stickerObjectList.filter(_stickerObject => _stickerObject !== stickerObject)

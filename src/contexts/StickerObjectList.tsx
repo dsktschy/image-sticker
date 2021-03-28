@@ -7,14 +7,12 @@ import React, {
 } from 'react'
 import { StickerObject } from '../lib/StickerObject'
 import {
-  addStickerObjectList,
-  removeStickerObjectList
+  addToStickerObjectList,
+  removeFromStickerObjectList
 } from '../lib/StickerObjectList'
 
 interface StickerObjectListAction {
-  payload: {
-    stickerObjectList: StickerObject[]
-  }
+  payload: StickerObject
   type: 'add' | 'remove'
 }
 
@@ -34,12 +32,9 @@ const stickerObjectListReducer = (
 ): StickerObject[] => {
   switch (type) {
     case 'add':
-      return addStickerObjectList(stickerObjectList, payload.stickerObjectList)
+      return addToStickerObjectList(stickerObjectList, payload)
     case 'remove':
-      return removeStickerObjectList(
-        stickerObjectList,
-        payload.stickerObjectList
-      )
+      return removeFromStickerObjectList(stickerObjectList, payload)
     default:
       return stickerObjectList
   }

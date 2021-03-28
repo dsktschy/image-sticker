@@ -40,6 +40,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
       />
       {sized && (
         <Moveable
+          className={`${generatedClassName}__Moveable`}
           draggable
           onDrag={onDrag}
           onDragEnd={onDragEnd}
@@ -57,6 +58,16 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     height: ${({ height }) => (height ? `${height}px` : 'auto')};
     min-height: 0;
     max-height: none;
+    vertical-align: top;
+  }
+
+  &__Moveable {
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  &:hover > &__Moveable {
+    opacity: 1;
   }
 `
 

@@ -1,8 +1,6 @@
 import { browser, Tabs } from 'webextension-polyfill-ts'
 import { createMessageObject } from '../lib/MessageObject'
 
-let fileReader: FileReader | null = null
-
 type SendMessage = (result: string) => Promise<void>
 
 const sendMessage: SendMessage = async result => {
@@ -37,30 +35,26 @@ const trySendingMessage: TrySendingMessage = ({ target }) => {
   })
 }
 
-type InitializeDefaultPopup = () => () => void
+type CreateHandleLoad = (
+  handleLoadCallback: () => void
+) => (event: ProgressEvent<FileReader>) => void
 
-export const initializeDefaultPopup: InitializeDefaultPopup = () => {
-  if (typeof FileReader === 'undefined') throw new Error('NoFileReaderError')
-  fileReader = new FileReader()
-  fileReader.addEventListener('load', trySendingMessage)
-  return () => {
-    if (!fileReader) return
-    fileReader.removeEventListener('load', trySendingMessage)
-  }
+const createHandleLoad: CreateHandleLoad = handleLoadCallback => event => {
+  trySendingMessage(event)
+  handleLoadCallback()
 }
 
-export type ReadFileList = (event: {
-  currentTarget: EventTarget & HTMLInputElement
-}) => void
+export type ReadFileList = (fileList: File[]) => void
 
-export const readFileList: ReadFileList = ({ currentTarget }) => {
-  const fileList = currentTarget.files
-  if (!fileReader || !fileList) {
-    // https://stackoverflow.com/questions/26634616/
-    currentTarget.value = ''
-    return
+export const readFileList: ReadFileList = fileList => {
+  if (typeof FileReader === 'undefined') throw new Error('NoFileReaderError')
+  for (const file of Array.from(fileList)) {
+    // https://stackoverflow.com/questions/24843508/
+    const fileReader = new FileReader()
+    const handleLoad = createHandleLoad(() => {
+      fileReader.removeEventListener('load', handleLoad)
+    })
+    fileReader.addEventListener('load', handleLoad)
+    fileReader.readAsDataURL(file)
   }
-  Array.from(fileList).forEach(fileReader.readAsDataURL.bind(fileReader))
-  // https://stackoverflow.com/questions/26634616/
-  currentTarget.value = ''
 }

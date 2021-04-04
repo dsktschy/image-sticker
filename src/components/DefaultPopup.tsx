@@ -1,47 +1,40 @@
-import React, { FC, ReactEventHandler } from 'react'
+import React, { FC } from 'react'
 import styled from 'styled-components'
+import {
+  DropzoneInputProps,
+  DropzoneRootProps,
+  useDropzone
+} from 'react-dropzone'
 import { useDefaultPopup } from '../hooks/DefaultPopup'
 
 type PresentationalDefaultPopup = FC<{
   className?: string
   generatedClassName?: string
-  onChange: ReactEventHandler<HTMLInputElement>
+  getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
+  getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
 }>
 
 export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
   ({
     className = '',
     generatedClassName = className.split(' ')[1],
-    onChange
+    getInputProps,
+    getRootProps
   }) => (
-    <div className={className}>
-      <label className={`${generatedClassName}__label`} htmlFor="input">
-        Select images
-      </label>
-      <input
-        accept=".png,.jpg,.jpeg,.gif,.svg"
-        className={`${generatedClassName}__input`}
-        id="input"
-        multiple
-        onChange={onChange}
-        type="file"
-      />
+    <div {...getRootProps({ className })}>
+      <input {...getInputProps()} />
+      <p className={`${generatedClassName}__message`}>Drop images here</p>
     </div>
   )
 )`
-  position: relative;
-
-  &__label {
+  &__message {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 200px;
     height: 200px;
-  }
-
-  &__input {
-    position: absolute;
-    display: none;
+    margin: 0;
+    font: bold 12px/1.2 sans-serif;
   }
 `
 
@@ -49,6 +42,17 @@ type DefaultPopup = FC
 
 export const DefaultPopup: DefaultPopup = () => {
   const { readFileList } = useDefaultPopup()
+  const { getInputProps, getRootProps } = useDropzone({
+    accept: '.png,.jpg,.jpeg,.gif,.svg',
+    noClick: true,
+    noKeyboard: true,
+    onDrop: readFileList
+  })
 
-  return <PresentationalDefaultPopup onChange={readFileList} />
+  return (
+    <PresentationalDefaultPopup
+      getInputProps={getInputProps}
+      getRootProps={getRootProps}
+    />
+  )
 }

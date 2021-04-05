@@ -1,7 +1,7 @@
 import { DropMessageObject } from './DropMessageObject'
 
 export interface StickerObject {
-  id: number
+  id: string
   position: {
     top: number
     left: number

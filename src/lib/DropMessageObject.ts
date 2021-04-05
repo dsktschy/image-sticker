@@ -1,7 +1,9 @@
+import { nanoid } from 'nanoid'
+
 export interface DropMessageObject {
   type: 'drop'
   payload: {
-    id: number
+    id: string
     src: string
     [key: string]: unknown
   }
@@ -15,7 +17,7 @@ type CreateDropMessageObject = (props: {
 export const createDropMessageObject: CreateDropMessageObject = props => ({
   type: 'drop',
   payload: {
-    id: new Date().getTime(),
+    id: nanoid(),
     ...props
   }
 })

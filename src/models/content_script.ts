@@ -8,16 +8,15 @@ export type HandleClickMessageCallback = () => void
 type HandleClickMessage = () => void
 
 type CreateHandleClickMessage = (
-  inputRef: HTMLInputElement | null,
+  openFileDialog: () => void,
   handleClickMessageCallback: HandleClickMessageCallback
 ) => HandleClickMessage
 
 const createHandleClickMessage: CreateHandleClickMessage = (
-  inputRef,
+  openFileDialog,
   handleClickMessageCallback
 ) => () => {
-  if (!inputRef) throw new Error('NoInputError')
-  inputRef.click()
+  openFileDialog()
   handleClickMessageCallback()
 }
 
@@ -59,18 +58,18 @@ const createHandleMessage: CreateHandleMessage = (
 }
 
 type InitializeContentScript = (
-  inputRef: HTMLInputElement | null,
+  openFileDialog: () => void,
   handleClickMessageCallback: HandleClickMessageCallback,
   handleDropMessageCallback: HandleDropMessageCallback
 ) => () => void
 
 export const initializeContentScript: InitializeContentScript = (
-  inputRef,
+  openFileDialog,
   handleClickMessageCallback,
   handleDropMessageCallback
 ) => {
   const handleMessage = createHandleMessage(
-    createHandleClickMessage(inputRef, handleClickMessageCallback),
+    createHandleClickMessage(openFileDialog, handleClickMessageCallback),
     createHandleDropMessage(handleDropMessageCallback)
   )
   const runtimeOnMessage = browser.runtime.onMessage

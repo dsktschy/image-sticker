@@ -20,7 +20,7 @@ type UseContentScript = () => {
 export const useContentScript: UseContentScript = () => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
-  const { getInputProps, getRootProps, inputRef } = useDropzone({
+  const { getInputProps, getRootProps, open } = useDropzone({
     accept: '.png,.jpg,.jpeg,.gif,.svg',
     noClick: true,
     noDrag: true,
@@ -40,8 +40,8 @@ export const useContentScript: UseContentScript = () => {
   )
 
   useEffect(() => {
-    return initializeContentScript(inputRef.current, noop, addStickerObject)
-  }, [addStickerObject, inputRef, noop])
+    return initializeContentScript(open, noop, addStickerObject)
+  }, [addStickerObject, open, noop])
 
   return { getInputProps, getRootProps }
 }

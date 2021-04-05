@@ -1,9 +1,24 @@
-import { readFileList } from '../models/DefaultPopup'
+import {
+  DropzoneInputProps,
+  DropzoneRootProps,
+  useDropzone
+} from 'react-dropzone'
+import { readFileList } from '../models/file_reader'
+import { sendClickMessageToBackground } from '../models/message_sender'
 
 type UseDefaultPopup = () => {
-  readFileList: typeof readFileList
+  getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
+  getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
+  sendClickMessageToBackground: typeof sendClickMessageToBackground
 }
 
 export const useDefaultPopup: UseDefaultPopup = () => {
-  return { readFileList }
+  const { getInputProps, getRootProps } = useDropzone({
+    accept: '.png,.jpg,.jpeg,.gif,.svg',
+    noClick: true,
+    noKeyboard: true,
+    onDrop: readFileList
+  })
+
+  return { getInputProps, getRootProps, sendClickMessageToBackground }
 }

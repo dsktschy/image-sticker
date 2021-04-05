@@ -1,16 +1,20 @@
 import React, { FC } from 'react'
 import styled from 'styled-components'
+import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
 import { StickerList } from './StickerList'
 import { useContentScript } from '../hooks/ContentScript'
 
 type PresentationalContentScript = FC<{
   className?: string
   generatedClassName?: string
+  getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
+  getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
 }>
 
 export const PresentationalContentScript = styled<PresentationalContentScript>(
-  ({ className = '' }) => (
-    <div className={className}>
+  ({ className = '', getInputProps, getRootProps }) => (
+    <div {...getRootProps({ className })}>
+      <input {...getInputProps()} />
       <StickerList />
     </div>
   )
@@ -24,7 +28,12 @@ export const PresentationalContentScript = styled<PresentationalContentScript>(
 type ContentScript = FC
 
 export const ContentScript: ContentScript = () => {
-  useContentScript()
+  const { getInputProps, getRootProps } = useContentScript()
 
-  return <PresentationalContentScript />
+  return (
+    <PresentationalContentScript
+      getInputProps={getInputProps}
+      getRootProps={getRootProps}
+    />
+  )
 }

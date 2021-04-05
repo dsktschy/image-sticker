@@ -1,16 +1,38 @@
 import { useCallback, useEffect } from 'react'
+import {
+  DropzoneInputProps,
+  DropzoneRootProps,
+  useDropzone
+} from 'react-dropzone'
 import { useStickerObjectListContext } from '../contexts/StickerObjectList'
 import {
   initializeContentScript,
-  HandleMessageCallback
-} from '../models/ContentScript'
+  HandleClickMessageCallback,
+  HandleDropMessageCallback
+} from '../models/content_script'
+import { readFileList } from '../models/file_reader'
 
-type UseContentScript = () => void
+type UseContentScript = () => {
+  getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
+  getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
+}
 
 export const useContentScript: UseContentScript = () => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
-  const addStickerObject = useCallback<HandleMessageCallback>(
+  const { getInputProps, getRootProps, inputRef } = useDropzone({
+    accept: '.png,.jpg,.jpeg,.gif,.svg',
+    noClick: true,
+    noDrag: true,
+    noKeyboard: true,
+    onDrop: readFileList
+  })
+
+  const noop = useCallback<HandleClickMessageCallback>(() => {
+    // No operation at this time
+  }, [])
+
+  const addStickerObject = useCallback<HandleDropMessageCallback>(
     stickerObject => {
       stickerObjectListDispatch({ type: 'add', payload: stickerObject })
     },
@@ -18,6 +40,8 @@ export const useContentScript: UseContentScript = () => {
   )
 
   useEffect(() => {
-    return initializeContentScript(addStickerObject)
-  }, [addStickerObject])
+    return initializeContentScript(inputRef.current, noop, addStickerObject)
+  }, [addStickerObject, inputRef, noop])
+
+  return { getInputProps, getRootProps }
 }

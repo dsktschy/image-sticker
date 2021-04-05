@@ -1,20 +1,35 @@
 import { StickerObject } from './StickerObject'
 
-export const addToStickerObjectList = (
+type AddToStickerObjectList = (
   stickerObjectList: StickerObject[],
   stickerObject: StickerObject
-): StickerObject[] => [...stickerObjectList, stickerObject]
+) => StickerObject[]
 
-export const removeFromStickerObjectList = (
+export const addToStickerObjectList: AddToStickerObjectList = (
+  stickerObjectList,
+  stickerObject
+) => [...stickerObjectList, stickerObject]
+
+type RemoveFromStickerObjectList = (
   stickerObjectList: StickerObject[],
   stickerObject: StickerObject
-): StickerObject[] =>
+) => StickerObject[]
+
+export const removeFromStickerObjectList: RemoveFromStickerObjectList = (
+  stickerObjectList,
+  stickerObject
+) =>
   stickerObjectList.filter(_stickerObject => _stickerObject !== stickerObject)
 
-export const updateInStickerObjectList = (
+type UpdateInStickerObjectList = (
   stickerObjectList: StickerObject[],
   stickerObject: StickerObject
-): StickerObject[] => {
+) => StickerObject[]
+
+export const updateInStickerObjectList: UpdateInStickerObjectList = (
+  stickerObjectList,
+  stickerObject
+) => {
   const updatedStickerObjectList = [...stickerObjectList]
   const targetStickerObject = stickerObjectList.find(
     _stickerObject => _stickerObject.id === stickerObject.id

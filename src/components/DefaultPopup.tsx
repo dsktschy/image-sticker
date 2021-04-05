@@ -1,10 +1,6 @@
 import React, { FC } from 'react'
 import styled from 'styled-components'
-import {
-  DropzoneInputProps,
-  DropzoneRootProps,
-  useDropzone
-} from 'react-dropzone'
+import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
 import { useDefaultPopup } from '../hooks/DefaultPopup'
 
 type PresentationalDefaultPopup = FC<{
@@ -12,6 +8,7 @@ type PresentationalDefaultPopup = FC<{
   generatedClassName?: string
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
+  onClick: () => void
 }>
 
 export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
@@ -19,40 +16,47 @@ export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
     className = '',
     generatedClassName = className.split(' ')[1],
     getInputProps,
-    getRootProps
+    getRootProps,
+    onClick
   }) => (
-    <div {...getRootProps({ className })}>
+    <div {...getRootProps({ className, onClick })}>
       <input {...getInputProps()} />
-      <p className={`${generatedClassName}__message`}>Drop images here</p>
+      <p className={`${generatedClassName}__text`}>
+        Drop images here
+        <br />
+        or
+        <br />
+        Click to select images
+      </p>
     </div>
   )
 )`
-  &__message {
+  &__text {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 200px;
-    height: 200px;
+    width: 240px;
+    height: 240px;
     margin: 0;
-    font: bold 12px/1.2 sans-serif;
+    font: bold 14px/1.5 sans-serif;
+    text-align: center;
   }
 `
 
 type DefaultPopup = FC
 
 export const DefaultPopup: DefaultPopup = () => {
-  const { readFileList } = useDefaultPopup()
-  const { getInputProps, getRootProps } = useDropzone({
-    accept: '.png,.jpg,.jpeg,.gif,.svg',
-    noClick: true,
-    noKeyboard: true,
-    onDrop: readFileList
-  })
+  const {
+    getInputProps,
+    getRootProps,
+    sendClickMessageToBackground
+  } = useDefaultPopup()
 
   return (
     <PresentationalDefaultPopup
       getInputProps={getInputProps}
       getRootProps={getRootProps}
+      onClick={sendClickMessageToBackground}
     />
   )
 }

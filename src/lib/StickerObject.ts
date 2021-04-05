@@ -1,4 +1,4 @@
-import { MessageObject } from './MessageObject'
+import { DropMessageObject } from './DropMessageObject'
 
 export interface StickerObject {
   id: number
@@ -9,22 +9,34 @@ export interface StickerObject {
   src: string
 }
 
-export const createStickerObject = (
-  messageObject: MessageObject,
+type CreateStickerObject = (
+  dropMessageObject: DropMessageObject,
   document: Document
-): StickerObject => ({
-  ...messageObject,
+) => StickerObject
+
+export const createStickerObject: CreateStickerObject = (
+  { payload },
+  document
+) => ({
+  id: payload.id,
   position: {
     top: document.documentElement.clientHeight / 2,
     left: document.documentElement.clientWidth / 2
-  }
+  },
+  src: payload.src
 })
 
-export const offsetStickerObjectPosition = (
+type OffsetStickerObjectPosition = (
   stickerObject: StickerObject,
   x: number,
   y: number
-): StickerObject => {
+) => StickerObject
+
+export const offsetStickerObjectPosition: OffsetStickerObjectPosition = (
+  stickerObject,
+  x,
+  y
+) => {
   const offsetPosition = { ...stickerObject.position }
   offsetPosition.top += y
   offsetPosition.left += x

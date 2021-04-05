@@ -16,6 +16,9 @@
       "js": ["content_script.js"]
     }
   ],
+  "background": {
+    "scripts": ["background.js"]
+  },
   "icons": {
     "128": "default_icon.png"
   }

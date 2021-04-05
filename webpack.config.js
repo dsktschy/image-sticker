@@ -14,7 +14,8 @@ module.exports = {
 
   entry: {
     content_script: path.resolve(__dirname, 'src/content_script.tsx'),
-    default_popup: path.resolve(__dirname, 'src/default_popup.tsx')
+    default_popup: path.resolve(__dirname, 'src/default_popup.tsx'),
+    background: path.resolve(__dirname, 'src/background.ts')
   },
 
   output: {

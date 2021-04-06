@@ -54,6 +54,8 @@ const createHandleMessage: CreateHandleMessage = (
     case 'drop':
       handleDropMessage(messageObject)
       break
+    default:
+      throw new Error('InvalidMessageTypeError')
   }
 }
 

@@ -39,7 +39,7 @@ const stickerObjectListReducer = (
     case 'update':
       return updateInStickerObjectList(stickerObjectList, payload)
     default:
-      return stickerObjectList
+      throw new Error('InvalidActionTypeError')
   }
 }
 

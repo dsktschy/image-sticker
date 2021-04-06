@@ -7,10 +7,10 @@ type CreateHandleLoad = (
 const createHandleLoad: CreateHandleLoad = handleLoadCallback => ({
   target
 }) => {
-  if (target) {
-    const { result } = target
-    if (typeof result === 'string') sendDropMessageToBackground(result)
-  }
+  if (!target) throw new Error('FileLoadingError')
+  const { result } = target
+  if (typeof result !== 'string') throw new Error('FileDataURLError')
+  sendDropMessageToBackground(result)
   handleLoadCallback()
 }
 

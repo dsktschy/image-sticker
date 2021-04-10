@@ -5,28 +5,26 @@ import { useSticker } from '../hooks/Sticker'
 import { StickerObject } from '../lib/StickerObject'
 
 type PresentationalSticker = FC<{
+  activated: boolean
   className?: string
   generatedClassName?: string
-  height: number
   onDrag: (event: OnDrag) => void
   onDragEnd: (event: OnDragEnd) => void
   onDragStart: (event: OnDragStart) => void
   onLoad: ReactEventHandler<HTMLImageElement>
-  sized: boolean
   src: string
   targetRef: React.RefObject<HTMLImageElement>
-  width: number
 }>
 
 export const PresentationalSticker = styled<PresentationalSticker>(
   ({
+    activated,
     className = '',
     generatedClassName = className.split(' ')[1],
     onDrag,
     onDragEnd,
     onDragStart,
     onLoad,
-    sized,
     src,
     targetRef
   }) => (
@@ -38,7 +36,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
         ref={targetRef}
         src={src}
       />
-      {sized && (
+      {activated && (
         <Moveable
           className={`${generatedClassName}__Moveable`}
           draggable
@@ -52,10 +50,10 @@ export const PresentationalSticker = styled<PresentationalSticker>(
   )
 )`
   &__image {
-    width: ${({ width }) => (width ? `${width}px` : 'auto')};
+    width: 100%;
     min-width: 0;
     max-width: none;
-    height: ${({ height }) => (height ? `${height}px` : 'auto')};
+    height: 100%;
     min-height: 0;
     max-height: none;
     vertical-align: top;
@@ -72,37 +70,39 @@ export const PresentationalSticker = styled<PresentationalSticker>(
 `
 
 type Sticker = FC<{
-  offsetPositionCallback: (stickerObject: StickerObject) => void
+  activateCallback: (stickerObject: StickerObject) => void
+  resetTransformCallback: (stickerObject: StickerObject) => void
   stickerObject: StickerObject
 }>
 
-export const Sticker: Sticker = ({ offsetPositionCallback, stickerObject }) => {
+export const Sticker: Sticker = ({
+  activateCallback,
+  resetTransformCallback,
+  stickerObject
+}) => {
   const {
-    height,
-    offsetPosition,
+    activate,
+    activated,
+    resetTransform,
     setCurrentTranslate,
-    setSize,
     setStartTranslate,
-    sized,
     src,
-    targetRef,
-    width
+    targetRef
   } = useSticker({
-    offsetPositionCallback,
+    activateCallback,
+    resetTransformCallback,
     stickerObject
   })
 
   return (
     <PresentationalSticker
-      height={height}
       onDrag={setCurrentTranslate}
-      onDragEnd={offsetPosition}
+      onDragEnd={resetTransform}
       onDragStart={setStartTranslate}
-      onLoad={setSize}
-      sized={sized}
+      onLoad={activate}
+      activated={activated}
       src={src}
       targetRef={targetRef}
-      width={width}
     />
   )
 }

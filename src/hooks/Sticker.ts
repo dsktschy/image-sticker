@@ -2,29 +2,29 @@ import {
   ReactEventHandler,
   RefObject,
   useCallback,
-  useMemo,
   useRef,
   useState
 } from 'react'
 import { OnDrag, OnDragEnd, OnDragStart } from 'react-moveable'
 import {
-  offsetStickerObjectPosition,
+  updateStickerObjectSize,
+  updateStickerObjectPosition,
+  updateStickerObjectTransform,
   StickerObject
 } from '../lib/StickerObject'
 
 type UseSticker = (props: {
-  offsetPositionCallback: (stickerObject: StickerObject) => void
+  activateCallback: (stickerObject: StickerObject) => void
+  resetTransformCallback: (stickerObject: StickerObject) => void
   stickerObject: StickerObject
 }) => {
-  height: number
-  offsetPosition: (event: OnDragEnd) => void
+  activate: ReactEventHandler<HTMLImageElement>
+  activated: boolean
+  resetTransform: (event: OnDragEnd) => void
   setCurrentTranslate: (event: OnDrag) => void
-  setSize: ReactEventHandler<HTMLImageElement>
   setStartTranslate: (event: OnDragStart) => void
-  sized: boolean
   src: string
   targetRef: RefObject<HTMLImageElement>
-  width: number
 }
 
 type Transform = {
@@ -32,27 +32,38 @@ type Transform = {
 }
 
 export const useSticker: UseSticker = ({
-  offsetPositionCallback,
+  activateCallback,
+  resetTransformCallback,
   stickerObject
 }) => {
   const targetRef = useRef<HTMLImageElement>(null)
 
-  const [width, setWidth] = useState(0)
+  const [transform] = useState<Transform>({
+    translate: [0, 0]
+  })
 
-  const [height, setHeight] = useState(0)
+  const [activated, setActivated] = useState(false)
 
-  const [transform] = useState<Transform>({ translate: [0, 0] })
-
-  const setSize = useCallback<ReactEventHandler<HTMLImageElement>>(
+  const activate = useCallback<ReactEventHandler<HTMLImageElement>>(
     ({ currentTarget }) => {
-      const { naturalWidth, naturalHeight } = currentTarget
-      setWidth(naturalWidth)
-      setHeight(naturalHeight)
+      const { naturalWidth, naturalHeight, ownerDocument } = currentTarget
+      const sizeUpdatedStickerObject = updateStickerObjectSize(
+        stickerObject,
+        naturalWidth,
+        naturalHeight
+      )
+      const { documentElement } = ownerDocument
+      const { clientWidth, clientHeight } = documentElement
+      const positionUpdatedStickerObject = updateStickerObjectPosition(
+        sizeUpdatedStickerObject,
+        clientWidth,
+        clientHeight
+      )
+      setActivated(true)
+      activateCallback(positionUpdatedStickerObject)
     },
-    []
+    [activateCallback, stickerObject]
   )
-
-  const sized = useMemo(() => !!width && !!height, [width, height])
 
   const setStartTranslate = useCallback<(event: OnDragStart) => void>(
     ({ set }) => {
@@ -70,28 +81,26 @@ export const useSticker: UseSticker = ({
     [transform]
   )
 
-  const offsetPosition = useCallback<(event: OnDragEnd) => void>(
+  const resetTransform = useCallback<(event: OnDragEnd) => void>(
     ({ target }) => {
-      const offsetSticker = offsetStickerObjectPosition(
+      const updatedSticker = updateStickerObjectTransform(
         stickerObject,
-        ...transform.translate
+        transform
       )
       transform.translate = [0, 0]
       target.style.transform = `translate(${0}px, ${0}px)`
-      offsetPositionCallback(offsetSticker)
+      resetTransformCallback(updatedSticker)
     },
-    [stickerObject, transform, offsetPositionCallback]
+    [stickerObject, transform, resetTransformCallback]
   )
 
   return {
-    height,
-    offsetPosition,
+    activate,
+    activated,
+    resetTransform,
     setCurrentTranslate,
-    setSize,
     setStartTranslate,
-    sized,
     src: stickerObject.src,
-    targetRef,
-    width
+    targetRef
   }
 }

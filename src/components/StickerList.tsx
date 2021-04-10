@@ -7,7 +7,8 @@ import { StickerObject } from '../lib/StickerObject'
 type PresentationalStickerList = FC<{
   className?: string
   generatedClassName?: string
-  offsetStickerPositionCallback: (stickerObject: StickerObject) => void
+  activateStickerCallback: (stickerObject: StickerObject) => void
+  resetStickerTransformCallback: (stickerObject: StickerObject) => void
   stickerObjectList: StickerObject[]
 }>
 
@@ -15,7 +16,8 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
   ({
     className = '',
     generatedClassName = className.split(' ')[1],
-    offsetStickerPositionCallback,
+    activateStickerCallback,
+    resetStickerTransformCallback,
     stickerObjectList
   }) => (
     <div className={className}>
@@ -25,7 +27,8 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
           key={stickerObject.id}
         >
           <Sticker
-            offsetPositionCallback={offsetStickerPositionCallback}
+            activateCallback={activateStickerCallback}
+            resetTransformCallback={resetStickerTransformCallback}
             stickerObject={stickerObject}
           />
         </div>
@@ -37,7 +40,6 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
 
   &__sticker {
     position: absolute;
-    transform: translate(-50%, -50%);
 
     ${
       // prettier-ignore
@@ -45,6 +47,11 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
         &:nth-child(${index + 1}) {
           top: ${stickerObject.position.top}px;
           left: ${stickerObject.position.left}px;
+          transform:
+            translateX(${stickerObject.transform.translate[0]}px)
+            translateY(${stickerObject.transform.translate[1]}px);
+          width: ${stickerObject.width}px;
+          height: ${stickerObject.height}px;
         }
       `).join()
     }
@@ -58,7 +65,8 @@ export const StickerList: StickerList = () => {
 
   return (
     <PresentationalStickerList
-      offsetStickerPositionCallback={updateStickerObject}
+      activateStickerCallback={updateStickerObject}
+      resetStickerTransformCallback={updateStickerObject}
       stickerObjectList={stickerObjectList}
     />
   )

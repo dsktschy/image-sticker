@@ -1,44 +1,90 @@
 import { DropMessageObject } from './DropMessageObject'
 
 export interface StickerObject {
+  height: number
   id: string
   position: {
-    top: number
     left: number
+    top: number
   }
   src: string
+  transform: {
+    translate: [number, number]
+  }
+  width: number
 }
 
 type CreateStickerObject = (
-  dropMessageObject: DropMessageObject,
-  document: Document
+  dropMessageObject: DropMessageObject
 ) => StickerObject
 
-export const createStickerObject: CreateStickerObject = (
-  { payload },
-  document
-) => ({
+export const createStickerObject: CreateStickerObject = ({ payload }) => ({
+  height: 0,
   id: payload.id,
   position: {
-    top: document.documentElement.clientHeight / 2,
-    left: document.documentElement.clientWidth / 2
+    left: 0,
+    top: 0
   },
-  src: payload.src
+  src: payload.src,
+  transform: {
+    translate: [0, 0]
+  },
+  width: 0
 })
 
-type OffsetStickerObjectPosition = (
+type UpdateStickerObjectSize = (
   stickerObject: StickerObject,
-  x: number,
-  y: number
+  width: number,
+  height: number
 ) => StickerObject
 
-export const offsetStickerObjectPosition: OffsetStickerObjectPosition = (
+export const updateStickerObjectSize: UpdateStickerObjectSize = (
   stickerObject,
-  x,
-  y
+  width,
+  height
+) => ({
+  ...stickerObject,
+  width,
+  height
+})
+
+type UpdateStickerObjectPosition = (
+  stickerObject: StickerObject,
+  clientWidth: number,
+  clientHeight: number
+) => StickerObject
+
+export const updateStickerObjectPosition: UpdateStickerObjectPosition = (
+  stickerObject,
+  clientWidth,
+  clientHeight
+) => ({
+  ...stickerObject,
+  position: {
+    top: clientHeight / 2 - stickerObject.height / 2,
+    left: clientWidth / 2 - stickerObject.width / 2
+  }
+})
+
+type UpdateStickerObjectTransform = (
+  stickerObject: StickerObject,
+  transform: {
+    translate: [number, number]
+  }
+) => StickerObject
+
+export const updateStickerObjectTransform: UpdateStickerObjectTransform = (
+  stickerObject,
+  { translate }
 ) => {
-  const offsetPosition = { ...stickerObject.position }
-  offsetPosition.top += y
-  offsetPosition.left += x
-  return { ...stickerObject, position: offsetPosition }
+  const currentTranslate = stickerObject.transform.translate
+  return {
+    ...stickerObject,
+    transform: {
+      translate: [
+        currentTranslate[0] + translate[0],
+        currentTranslate[1] + translate[1]
+      ]
+    }
+  }
 }

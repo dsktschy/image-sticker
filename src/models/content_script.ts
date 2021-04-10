@@ -29,8 +29,7 @@ type CreateHandleDropMessage = (
 ) => HandleDropMessage
 
 const createHandleDropMessage: CreateHandleDropMessage = handleDropMessageCallback => dropMessageObject => {
-  if (typeof document === 'undefined') throw new Error('NoDocumentError')
-  const stickerObject = createStickerObject(dropMessageObject, document)
+  const stickerObject = createStickerObject(dropMessageObject)
   handleDropMessageCallback(stickerObject)
 }
 

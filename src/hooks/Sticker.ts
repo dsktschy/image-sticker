@@ -5,15 +5,24 @@ import {
   useRef,
   useState
 } from 'react'
-import { OnDrag, OnDragStart, OnScale, OnScaleStart } from 'react-moveable'
+import {
+  OnDrag,
+  OnDragStart,
+  OnRotate,
+  OnRotateStart,
+  OnScale,
+  OnScaleStart
+} from 'react-moveable'
 
 type UseSticker = () => {
   activate: ReactEventHandler<HTMLImageElement>
   activated: boolean
   height: number
   left: number
+  setCurrentRotate: (event: OnRotate) => void
   setCurrentScale: (event: OnScale) => void
   setCurrentTranslate: (event: OnDrag) => void
+  setStartRotate: (event: OnRotateStart) => void
   setStartScale: (event: OnScaleStart) => void
   setStartTranslate: (event: OnDragStart) => void
   targetRef: RefObject<HTMLImageElement>
@@ -22,6 +31,7 @@ type UseSticker = () => {
 }
 
 type Transform = {
+  rotate: number
   scale: [number, number]
   translate: [number, number]
 }
@@ -38,6 +48,7 @@ export const useSticker: UseSticker = () => {
   const [height, setHeight] = useState(0)
 
   const [transform] = useState<Transform>({
+    rotate: 0,
     scale: [1, 1],
     translate: [0, 0]
   })
@@ -73,12 +84,24 @@ export const useSticker: UseSticker = () => {
     [transform]
   )
 
+  const setStartRotate = useCallback<(event: OnRotateStart) => void>(
+    ({ set }) => {
+      set(transform.rotate)
+    },
+    [transform]
+  )
+
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(
     ({ target, beforeTranslate }) => {
       const [translateX, translateY] = beforeTranslate
       const [scaleX, scaleY] = transform.scale
+      const rotate = transform.rotate
       transform.translate = [translateX, translateY]
-      target.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`
+      target.style.transform = `
+        translate(${translateX}px, ${translateY}px)
+        scale(${scaleX}, ${scaleY})
+        rotate(${rotate}deg)
+      `
     },
     [transform]
   )
@@ -87,9 +110,29 @@ export const useSticker: UseSticker = () => {
     ({ drag, target, scale }) => {
       const [translateX, translateY] = drag.beforeTranslate
       const [scaleX, scaleY] = scale
+      const rotate = transform.rotate
       transform.translate = [translateX, translateY]
       transform.scale = [scaleX, scaleY]
-      target.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`
+      target.style.transform = `
+        translate(${translateX}px, ${translateY}px)
+        scale(${scaleX}, ${scaleY})
+        rotate(${rotate}deg)
+      `
+    },
+    [transform]
+  )
+
+  const setCurrentRotate = useCallback<(event: OnRotate) => void>(
+    ({ target, beforeRotate }) => {
+      const [translateX, translateY] = transform.translate
+      const [scaleX, scaleY] = transform.scale
+      const rotate = beforeRotate
+      transform.rotate = rotate
+      target.style.transform = `
+        translate(${translateX}px, ${translateY}px)
+        scale(${scaleX}, ${scaleY})
+        rotate(${rotate}deg)
+      `
     },
     [transform]
   )
@@ -99,8 +142,10 @@ export const useSticker: UseSticker = () => {
     activated,
     height,
     left,
+    setCurrentRotate,
     setCurrentScale,
     setCurrentTranslate,
+    setStartRotate,
     setStartScale,
     setStartTranslate,
     targetRef,

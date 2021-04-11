@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import Moveable, {
   OnDrag,
   OnDragStart,
+  OnRotate,
+  OnRotateStart,
   OnScale,
   OnScaleStart
 } from 'react-moveable'
@@ -17,6 +19,8 @@ type PresentationalSticker = FC<{
   onDrag: (event: OnDrag) => void
   onDragStart: (event: OnDragStart) => void
   onLoad: ReactEventHandler<HTMLImageElement>
+  onRotate: (event: OnRotate) => void
+  onRotateStart: (event: OnRotateStart) => void
   onScale: (event: OnScale) => void
   onScaleStart: (event: OnScaleStart) => void
   src: string
@@ -34,6 +38,8 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     onDrag,
     onDragStart,
     onLoad,
+    onRotate,
+    onRotateStart,
     onScale,
     onScaleStart,
     src,
@@ -56,8 +62,11 @@ export const PresentationalSticker = styled<PresentationalSticker>(
           draggable
           onDrag={onDrag}
           onDragStart={onDragStart}
+          onRotate={onRotate}
+          onRotateStart={onRotateStart}
           onScale={onScale}
           onScaleStart={onScaleStart}
+          rotatable
           scalable
           target={targetRef}
         />
@@ -102,8 +111,10 @@ export const Sticker: Sticker = ({ src }) => {
     activated,
     height,
     left,
+    setCurrentRotate,
     setCurrentScale,
     setCurrentTranslate,
+    setStartRotate,
     setStartScale,
     setStartTranslate,
     targetRef,
@@ -119,6 +130,8 @@ export const Sticker: Sticker = ({ src }) => {
       onDrag={setCurrentTranslate}
       onDragStart={setStartTranslate}
       onLoad={activate}
+      onRotate={setCurrentRotate}
+      onRotateStart={setStartRotate}
       onScale={setCurrentScale}
       onScaleStart={setStartScale}
       src={src}

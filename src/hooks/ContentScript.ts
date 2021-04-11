@@ -43,5 +43,8 @@ export const useContentScript: UseContentScript = () => {
     return initializeContentScript(open, noop, addStickerObject)
   }, [addStickerObject, open, noop])
 
-  return { getInputProps, getRootProps }
+  return {
+    getInputProps,
+    getRootProps
+  }
 }

@@ -20,5 +20,9 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     onDrop: readFileList
   })
 
-  return { getInputProps, getRootProps, sendClickMessageToBackground }
+  return {
+    getInputProps,
+    getRootProps,
+    sendClickMessageToBackground
+  }
 }

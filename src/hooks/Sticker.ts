@@ -5,38 +5,34 @@ import {
   useRef,
   useState
 } from 'react'
-import { OnDrag, OnDragEnd, OnDragStart } from 'react-moveable'
-import {
-  updateStickerObjectSize,
-  updateStickerObjectPosition,
-  updateStickerObjectTransform,
-  StickerObject
-} from '../lib/StickerObject'
+import { OnDrag, OnDragStart } from 'react-moveable'
 
-type UseSticker = (props: {
-  activateCallback: (stickerObject: StickerObject) => void
-  resetTransformCallback: (stickerObject: StickerObject) => void
-  stickerObject: StickerObject
-}) => {
+type UseSticker = () => {
   activate: ReactEventHandler<HTMLImageElement>
   activated: boolean
-  resetTransform: (event: OnDragEnd) => void
+  height: number
+  left: number
   setCurrentTranslate: (event: OnDrag) => void
   setStartTranslate: (event: OnDragStart) => void
-  src: string
   targetRef: RefObject<HTMLImageElement>
+  top: number
+  width: number
 }
 
 type Transform = {
   translate: [number, number]
 }
 
-export const useSticker: UseSticker = ({
-  activateCallback,
-  resetTransformCallback,
-  stickerObject
-}) => {
+export const useSticker: UseSticker = () => {
   const targetRef = useRef<HTMLImageElement>(null)
+
+  const [top, setTop] = useState(0)
+
+  const [left, setLeft] = useState(0)
+
+  const [width, setWidth] = useState(0)
+
+  const [height, setHeight] = useState(0)
 
   const [transform] = useState<Transform>({
     translate: [0, 0]
@@ -47,22 +43,15 @@ export const useSticker: UseSticker = ({
   const activate = useCallback<ReactEventHandler<HTMLImageElement>>(
     ({ currentTarget }) => {
       const { naturalWidth, naturalHeight, ownerDocument } = currentTarget
-      const sizeUpdatedStickerObject = updateStickerObjectSize(
-        stickerObject,
-        naturalWidth,
-        naturalHeight
-      )
+      setWidth(naturalWidth)
+      setHeight(naturalHeight)
       const { documentElement } = ownerDocument
       const { clientWidth, clientHeight } = documentElement
-      const positionUpdatedStickerObject = updateStickerObjectPosition(
-        sizeUpdatedStickerObject,
-        clientWidth,
-        clientHeight
-      )
+      setTop(clientHeight / 2 - naturalHeight / 2)
+      setLeft(clientWidth / 2 - naturalWidth / 2)
       setActivated(true)
-      activateCallback(positionUpdatedStickerObject)
     },
-    [activateCallback, stickerObject]
+    []
   )
 
   const setStartTranslate = useCallback<(event: OnDragStart) => void>(
@@ -81,26 +70,15 @@ export const useSticker: UseSticker = ({
     [transform]
   )
 
-  const resetTransform = useCallback<(event: OnDragEnd) => void>(
-    ({ target }) => {
-      const updatedSticker = updateStickerObjectTransform(
-        stickerObject,
-        transform
-      )
-      transform.translate = [0, 0]
-      target.style.transform = `translate(${0}px, ${0}px)`
-      resetTransformCallback(updatedSticker)
-    },
-    [stickerObject, transform, resetTransformCallback]
-  )
-
   return {
     activate,
     activated,
-    resetTransform,
+    height,
+    left,
     setCurrentTranslate,
     setStartTranslate,
-    src: stickerObject.src,
-    targetRef
+    targetRef,
+    top,
+    width
   }
 }

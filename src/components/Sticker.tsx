@@ -1,19 +1,21 @@
 import React, { FC, ReactEventHandler } from 'react'
 import styled from 'styled-components'
-import Moveable, { OnDrag, OnDragEnd, OnDragStart } from 'react-moveable'
+import Moveable, { OnDrag, OnDragStart } from 'react-moveable'
 import { useSticker } from '../hooks/Sticker'
-import { StickerObject } from '../lib/StickerObject'
 
 type PresentationalSticker = FC<{
   activated: boolean
   className?: string
   generatedClassName?: string
+  height: number
+  left: number
   onDrag: (event: OnDrag) => void
-  onDragEnd: (event: OnDragEnd) => void
   onDragStart: (event: OnDragStart) => void
   onLoad: ReactEventHandler<HTMLImageElement>
   src: string
   targetRef: React.RefObject<HTMLImageElement>
+  top: number
+  width: number
 }>
 
 export const PresentationalSticker = styled<PresentationalSticker>(
@@ -21,27 +23,29 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     activated,
     className = '',
     generatedClassName = className.split(' ')[1],
+    height,
     onDrag,
-    onDragEnd,
     onDragStart,
     onLoad,
     src,
-    targetRef
+    targetRef,
+    width
   }) => (
     <div className={className}>
       <img
         alt=""
         className={`${generatedClassName}__image`}
+        height={height}
         onLoad={onLoad}
         ref={targetRef}
         src={src}
+        width={width}
       />
       {activated && (
         <Moveable
           className={`${generatedClassName}__Moveable`}
           draggable
           onDrag={onDrag}
-          onDragEnd={onDragEnd}
           onDragStart={onDragStart}
           target={targetRef}
         />
@@ -49,14 +53,21 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     </div>
   )
 )`
+  position: relative;
+
   &__image {
-    width: 100%;
+    position: absolute;
     min-width: 0;
     max-width: none;
-    height: 100%;
     min-height: 0;
     max-height: none;
     vertical-align: top;
+    ${({ height, left, top, width }) => `
+      top: ${top}px;
+      left: ${left}px;
+      width: ${width}px;
+      height: ${height}px;
+    `}
   }
 
   &__Moveable {
@@ -70,39 +81,34 @@ export const PresentationalSticker = styled<PresentationalSticker>(
 `
 
 type Sticker = FC<{
-  activateCallback: (stickerObject: StickerObject) => void
-  resetTransformCallback: (stickerObject: StickerObject) => void
-  stickerObject: StickerObject
+  src: string
 }>
 
-export const Sticker: Sticker = ({
-  activateCallback,
-  resetTransformCallback,
-  stickerObject
-}) => {
+export const Sticker: Sticker = ({ src }) => {
   const {
     activate,
     activated,
-    resetTransform,
+    height,
+    left,
     setCurrentTranslate,
     setStartTranslate,
-    src,
-    targetRef
-  } = useSticker({
-    activateCallback,
-    resetTransformCallback,
-    stickerObject
-  })
+    targetRef,
+    top,
+    width
+  } = useSticker()
 
   return (
     <PresentationalSticker
+      activated={activated}
+      height={height}
+      left={left}
       onDrag={setCurrentTranslate}
-      onDragEnd={resetTransform}
       onDragStart={setStartTranslate}
       onLoad={activate}
-      activated={activated}
       src={src}
       targetRef={targetRef}
+      top={top}
+      width={width}
     />
   )
 }

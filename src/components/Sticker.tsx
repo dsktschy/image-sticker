@@ -1,6 +1,11 @@
 import React, { FC, ReactEventHandler } from 'react'
 import styled from 'styled-components'
-import Moveable, { OnDrag, OnDragStart } from 'react-moveable'
+import Moveable, {
+  OnDrag,
+  OnDragStart,
+  OnScale,
+  OnScaleStart
+} from 'react-moveable'
 import { useSticker } from '../hooks/Sticker'
 
 type PresentationalSticker = FC<{
@@ -12,6 +17,8 @@ type PresentationalSticker = FC<{
   onDrag: (event: OnDrag) => void
   onDragStart: (event: OnDragStart) => void
   onLoad: ReactEventHandler<HTMLImageElement>
+  onScale: (event: OnScale) => void
+  onScaleStart: (event: OnScaleStart) => void
   src: string
   targetRef: React.RefObject<HTMLImageElement>
   top: number
@@ -27,6 +34,8 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     onDrag,
     onDragStart,
     onLoad,
+    onScale,
+    onScaleStart,
     src,
     targetRef,
     width
@@ -47,6 +56,9 @@ export const PresentationalSticker = styled<PresentationalSticker>(
           draggable
           onDrag={onDrag}
           onDragStart={onDragStart}
+          onScale={onScale}
+          onScaleStart={onScaleStart}
+          scalable
           target={targetRef}
         />
       )}
@@ -90,7 +102,9 @@ export const Sticker: Sticker = ({ src }) => {
     activated,
     height,
     left,
+    setCurrentScale,
     setCurrentTranslate,
+    setStartScale,
     setStartTranslate,
     targetRef,
     top,
@@ -105,6 +119,8 @@ export const Sticker: Sticker = ({ src }) => {
       onDrag={setCurrentTranslate}
       onDragStart={setStartTranslate}
       onLoad={activate}
+      onScale={setCurrentScale}
+      onScaleStart={setStartScale}
       src={src}
       targetRef={targetRef}
       top={top}

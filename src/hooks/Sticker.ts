@@ -5,14 +5,16 @@ import {
   useRef,
   useState
 } from 'react'
-import { OnDrag, OnDragStart } from 'react-moveable'
+import { OnDrag, OnDragStart, OnScale, OnScaleStart } from 'react-moveable'
 
 type UseSticker = () => {
   activate: ReactEventHandler<HTMLImageElement>
   activated: boolean
   height: number
   left: number
+  setCurrentScale: (event: OnScale) => void
   setCurrentTranslate: (event: OnDrag) => void
+  setStartScale: (event: OnScaleStart) => void
   setStartTranslate: (event: OnDragStart) => void
   targetRef: RefObject<HTMLImageElement>
   top: number
@@ -20,6 +22,7 @@ type UseSticker = () => {
 }
 
 type Transform = {
+  scale: [number, number]
   translate: [number, number]
 }
 
@@ -35,6 +38,7 @@ export const useSticker: UseSticker = () => {
   const [height, setHeight] = useState(0)
 
   const [transform] = useState<Transform>({
+    scale: [1, 1],
     translate: [0, 0]
   })
 
@@ -61,11 +65,31 @@ export const useSticker: UseSticker = () => {
     [transform]
   )
 
+  const setStartScale = useCallback<(event: OnScaleStart) => void>(
+    ({ set, dragStart }) => {
+      set(transform.scale)
+      if (dragStart) dragStart.set(transform.translate)
+    },
+    [transform]
+  )
+
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(
     ({ target, beforeTranslate }) => {
-      const [x, y] = beforeTranslate
-      transform.translate = [x, y]
-      target.style.transform = `translate(${x}px, ${y}px)`
+      const [translateX, translateY] = beforeTranslate
+      const [scaleX, scaleY] = transform.scale
+      transform.translate = [translateX, translateY]
+      target.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`
+    },
+    [transform]
+  )
+
+  const setCurrentScale = useCallback<(event: OnScale) => void>(
+    ({ drag, target, scale }) => {
+      const [translateX, translateY] = drag.beforeTranslate
+      const [scaleX, scaleY] = scale
+      transform.translate = [translateX, translateY]
+      transform.scale = [scaleX, scaleY]
+      target.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`
     },
     [transform]
   )
@@ -75,7 +99,9 @@ export const useSticker: UseSticker = () => {
     activated,
     height,
     left,
+    setCurrentScale,
     setCurrentTranslate,
+    setStartScale,
     setStartTranslate,
     targetRef,
     top,

@@ -71,6 +71,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
           onRotateStart={onRotateStart}
           onScale={onScale}
           onScaleStart={onScaleStart}
+          origin={false}
           props={ableProps}
           rotatable
           scalable

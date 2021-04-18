@@ -71,6 +71,10 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
     translate: [0, 0]
   })
 
+  // Make sure that the width and height are not less than 1px,
+  // to make edges always active
+  const minScale = useMemo(() => [1 / width, 1 / height], [width, height])
+
   const [activated, setActivated] = useState(false)
 
   const activate = useCallback<ReactEventHandler<HTMLImageElement>>(
@@ -78,8 +82,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
       const { naturalWidth, naturalHeight, ownerDocument } = currentTarget
       setWidth(naturalWidth)
       setHeight(naturalHeight)
-      const { documentElement } = ownerDocument
-      const { clientWidth, clientHeight } = documentElement
+      const { clientWidth, clientHeight } = ownerDocument.documentElement
       setTop(clientHeight / 2 - naturalHeight / 2)
       setLeft(clientWidth / 2 - naturalWidth / 2)
       setActivated(true)
@@ -111,14 +114,11 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(
     ({ target, beforeTranslate }) => {
-      const [translateX, translateY] = beforeTranslate
-      const [scaleX, scaleY] = transform.scale
-      const rotate = transform.rotate
-      transform.translate = [translateX, translateY]
+      transform.translate = beforeTranslate as [number, number]
       target.style.transform = `
-        translate(${translateX}px, ${translateY}px)
-        scale(${scaleX}, ${scaleY})
-        rotate(${rotate}deg)
+        translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)
+        rotate(${transform.rotate}deg)
+        scale(${transform.scale[0]}, ${transform.scale[1]})
       `
     },
     [transform]
@@ -126,30 +126,26 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const setCurrentScale = useCallback<(event: OnScale) => void>(
     ({ drag, target, scale }) => {
-      const [translateX, translateY] = drag.beforeTranslate
-      const [scaleX, scaleY] = scale
-      const rotate = transform.rotate
-      transform.translate = [translateX, translateY]
+      transform.translate = drag.beforeTranslate as [number, number]
+      const scaleX = scale[0] > minScale[0] ? scale[0] : minScale[0]
+      const scaleY = scale[1] > minScale[1] ? scale[1] : minScale[1]
       transform.scale = [scaleX, scaleY]
       target.style.transform = `
-        translate(${translateX}px, ${translateY}px)
+        translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px)
+        rotate(${transform.rotate}deg)
         scale(${scaleX}, ${scaleY})
-        rotate(${rotate}deg)
       `
     },
-    [transform]
+    [transform, minScale]
   )
 
   const setCurrentRotate = useCallback<(event: OnRotate) => void>(
     ({ target, beforeRotate }) => {
-      const [translateX, translateY] = transform.translate
-      const [scaleX, scaleY] = transform.scale
-      const rotate = beforeRotate
-      transform.rotate = rotate
+      transform.rotate = beforeRotate
       target.style.transform = `
-        translate(${translateX}px, ${translateY}px)
-        scale(${scaleX}, ${scaleY})
-        rotate(${rotate}deg)
+        translate(${transform.translate[0]}px, ${transform.translate[1]}px)
+        rotate(${beforeRotate}deg)
+        scale(${transform.scale[0]}, ${transform.scale[1]})
       `
     },
     [transform]

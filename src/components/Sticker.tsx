@@ -8,9 +8,12 @@ import Moveable, {
   OnScale,
   OnScaleStart
 } from 'react-moveable'
-import { useSticker } from '../hooks/Sticker'
+import { Removable } from '../mixins/Removable'
+import { AbleProps, useSticker } from '../hooks/Sticker'
+import { StickerObject } from '../lib/StickerObject'
 
 type PresentationalSticker = FC<{
+  ableProps: AbleProps
   activated: boolean
   className?: string
   generatedClassName?: string
@@ -31,6 +34,7 @@ type PresentationalSticker = FC<{
 
 export const PresentationalSticker = styled<PresentationalSticker>(
   ({
+    ableProps,
     activated,
     className = '',
     generatedClassName = className.split(' ')[1],
@@ -58,6 +62,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
       />
       {activated && (
         <Moveable
+          ables={[Removable]}
           className={`${generatedClassName}__Moveable`}
           draggable
           onDrag={onDrag}
@@ -66,6 +71,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
           onRotateStart={onRotateStart}
           onScale={onScale}
           onScaleStart={onScaleStart}
+          props={ableProps}
           rotatable
           scalable
           target={targetRef}
@@ -102,11 +108,12 @@ export const PresentationalSticker = styled<PresentationalSticker>(
 `
 
 type Sticker = FC<{
-  src: string
+  stickerObject: StickerObject
 }>
 
-export const Sticker: Sticker = ({ src }) => {
+export const Sticker: Sticker = ({ stickerObject }) => {
   const {
+    ableProps,
     activate,
     activated,
     height,
@@ -120,10 +127,11 @@ export const Sticker: Sticker = ({ src }) => {
     targetRef,
     top,
     width
-  } = useSticker()
+  } = useSticker({ stickerObject })
 
   return (
     <PresentationalSticker
+      ableProps={ableProps}
       activated={activated}
       height={height}
       left={left}
@@ -134,7 +142,7 @@ export const Sticker: Sticker = ({ src }) => {
       onRotateStart={setStartRotate}
       onScale={setCurrentScale}
       onScaleStart={setStartScale}
-      src={src}
+      src={stickerObject.src}
       targetRef={targetRef}
       top={top}
       width={width}

@@ -19,7 +19,9 @@ export const removeFromStickerObjectList: RemoveFromStickerObjectList = (
   stickerObjectList,
   stickerObject
 ) =>
-  stickerObjectList.filter(_stickerObject => _stickerObject !== stickerObject)
+  stickerObjectList.filter(
+    _stickerObject => _stickerObject.id !== stickerObject.id
+  )
 
 type UpdateInStickerObjectList = (
   stickerObjectList: StickerObject[],

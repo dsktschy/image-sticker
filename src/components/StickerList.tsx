@@ -14,7 +14,7 @@ export const PresentationalStickerList = styled<PresentationalStickerList>(
   ({ className = '', stickerObjectList }) => (
     <div className={className}>
       {stickerObjectList.map(stickerObject => (
-        <Sticker key={stickerObject.id} src={stickerObject.src} />
+        <Sticker key={stickerObject.id} stickerObject={stickerObject} />
       ))}
     </div>
   )

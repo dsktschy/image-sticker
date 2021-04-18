@@ -2,6 +2,7 @@ import {
   ReactEventHandler,
   RefObject,
   useCallback,
+  useMemo,
   useRef,
   useState
 } from 'react'
@@ -13,8 +14,23 @@ import {
   OnScale,
   OnScaleStart
 } from 'react-moveable'
+import { StickerObject } from '../lib/StickerObject'
 
-type UseSticker = () => {
+export interface AbleProps {
+  removable: boolean
+  stickerObject: StickerObject
+}
+
+interface Transform {
+  rotate: number
+  scale: [number, number]
+  translate: [number, number]
+}
+
+type UseSticker = (props: {
+  stickerObject: StickerObject
+}) => {
+  ableProps: AbleProps
   activate: ReactEventHandler<HTMLImageElement>
   activated: boolean
   height: number
@@ -30,14 +46,16 @@ type UseSticker = () => {
   width: number
 }
 
-type Transform = {
-  rotate: number
-  scale: [number, number]
-  translate: [number, number]
-}
-
-export const useSticker: UseSticker = () => {
+export const useSticker: UseSticker = ({ stickerObject }) => {
   const targetRef = useRef<HTMLImageElement>(null)
+
+  const ableProps = useMemo<AbleProps>(
+    () => ({
+      removable: true,
+      stickerObject
+    }),
+    [stickerObject]
+  )
 
   const [top, setTop] = useState(0)
 
@@ -138,6 +156,7 @@ export const useSticker: UseSticker = () => {
   )
 
   return {
+    ableProps,
     activate,
     activated,
     height,

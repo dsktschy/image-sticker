@@ -21,7 +21,7 @@ export const Removable: Able = {
         key="RemoveButton"
         rotate={moveable.getRect().rotation}
         stickerObject={moveable.props.stickerObject}
-        translate={moveable.state.pos2 as [number, number]}
+        translate={moveable.state.pos2}
       />
     )
   }

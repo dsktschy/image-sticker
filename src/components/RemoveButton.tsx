@@ -7,7 +7,7 @@ type PresentationalRemoveButton = FC<{
   className?: string
   onClick: ReactEventHandler<HTMLButtonElement>
   rotate: number
-  translate: [number, number]
+  translate: number[]
 }>
 
 const PresentationalRemoveButton = styled<PresentationalRemoveButton>(
@@ -65,7 +65,7 @@ const PresentationalRemoveButton = styled<PresentationalRemoveButton>(
 type RemoveButton = FC<{
   rotate: number
   stickerObject: StickerObject
-  translate: [number, number]
+  translate: number[]
 }>
 
 export const RemoveButton: RemoveButton = ({

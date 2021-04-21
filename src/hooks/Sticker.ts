@@ -23,8 +23,8 @@ export interface AbleProps {
 
 interface Transform {
   rotate: number
-  scale: [number, number]
-  translate: [number, number]
+  scale: number[]
+  translate: number[]
 }
 
 type UseSticker = (props: {
@@ -114,7 +114,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(
     ({ target, beforeTranslate }) => {
-      transform.translate = beforeTranslate as [number, number]
+      transform.translate = beforeTranslate
       target.style.transform = `
         translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)
         rotate(${transform.rotate}deg)
@@ -126,7 +126,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const setCurrentScale = useCallback<(event: OnScale) => void>(
     ({ drag, target, scale }) => {
-      transform.translate = drag.beforeTranslate as [number, number]
+      transform.translate = drag.beforeTranslate
       const scaleX = scale[0] > minScale[0] ? scale[0] : minScale[0]
       const scaleY = scale[1] > minScale[1] ? scale[1] : minScale[1]
       transform.scale = [scaleX, scaleY]

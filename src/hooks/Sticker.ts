@@ -51,6 +51,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const ableProps = useMemo<AbleProps>(
     () => ({
+      'corner-rotatable': true,
       removable: true,
       stickerObject
     }),

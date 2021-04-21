@@ -18,7 +18,7 @@ export const Removable: Able = {
   render(moveable: MoveableManagerInterface<RemovableProps>) {
     return (
       <RemoveButton
-        key="RemoveButton"
+        key="removable"
         rotate={moveable.getRect().rotation}
         stickerObject={moveable.props.stickerObject}
         translate={moveable.state.pos2}

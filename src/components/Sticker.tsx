@@ -8,6 +8,7 @@ import Moveable, {
   OnScale,
   OnScaleStart
 } from 'react-moveable'
+import { CornerRotatable } from '../mixins/CornerRotatable'
 import { Removable } from '../mixins/Removable'
 import { AbleProps, useSticker } from '../hooks/Sticker'
 import { StickerObject } from '../lib/StickerObject'
@@ -62,7 +63,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
       />
       {activated && (
         <Moveable
-          ables={[Removable]}
+          ables={[CornerRotatable, Removable]}
           className={`${generatedClassName}__Moveable`}
           draggable
           onDrag={onDrag}
@@ -90,20 +91,29 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     min-height: 0;
     max-height: none;
     vertical-align: top;
+    cursor: grab;
     ${({ height, left, top, width }) => `
       top: ${top}px;
       left: ${left}px;
       width: ${width}px;
       height: ${height}px;
     `}
+
+    &:active {
+      cursor: grabbing;
+    }
   }
 
   &__Moveable {
     opacity: 0;
     transition: opacity 0.1s;
+
+    .moveable-rotation {
+      display: none;
+    }
   }
 
-  &:hover > &__Moveable {
+  &:hover &__Moveable {
     opacity: 1;
   }
 `

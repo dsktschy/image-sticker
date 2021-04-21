@@ -19,10 +19,10 @@ const PresentationalRemoveButton = styled<PresentationalRemoveButton>(
       // https://github.com/styled-components/styled-components/blob/master/packages/styled-components/src/utils/createWarnTooManyClasses.js
       style={{
         transform: `
-        translate(${translate[0]}px, ${translate[1]}px)
-        rotate(${rotate}deg)
-        translateX(10px)
-      `
+          translate(${translate[0]}px, ${translate[1]}px)
+          rotate(${rotate}deg)
+          translateX(10px)
+        `
       }}
     />
   )
@@ -30,6 +30,7 @@ const PresentationalRemoveButton = styled<PresentationalRemoveButton>(
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 11;
   display: block;
   width: 15px;
   height: 15px;
@@ -39,6 +40,7 @@ const PresentationalRemoveButton = styled<PresentationalRemoveButton>(
   appearance: none;
   background: transparent;
   transform-origin: 0px 0px;
+  cursor: pointer;
 
   &::before,
   &::after {

@@ -19,6 +19,7 @@ type PresentationalSticker = FC<{
   className?: string
   generatedClassName?: string
   height: number
+  keepRatio: boolean
   left: number
   onDrag: (event: OnDrag) => void
   onDragStart: (event: OnDragStart) => void
@@ -40,6 +41,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     className = '',
     generatedClassName = className.split(' ')[1],
     height,
+    keepRatio,
     onDrag,
     onDragStart,
     onLoad,
@@ -66,6 +68,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
           ables={[CornerRotatable, Removable]}
           className={`${generatedClassName}__Moveable`}
           draggable
+          keepRatio={keepRatio}
           onDrag={onDrag}
           onDragStart={onDragStart}
           onRotate={onRotate}
@@ -128,6 +131,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
     activate,
     activated,
     height,
+    keepRatio,
     left,
     setCurrentRotate,
     setCurrentScale,
@@ -145,6 +149,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
       ableProps={ableProps}
       activated={activated}
       height={height}
+      keepRatio={keepRatio}
       left={left}
       onDrag={setCurrentTranslate}
       onDragStart={setStartTranslate}

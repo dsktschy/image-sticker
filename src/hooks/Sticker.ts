@@ -34,6 +34,7 @@ type UseSticker = (props: {
   activate: ReactEventHandler<HTMLImageElement>
   activated: boolean
   height: number
+  keepRatio: boolean
   left: number
   setCurrentRotate: (event: OnRotate) => void
   setCurrentScale: (event: OnScale) => void
@@ -76,6 +77,8 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
   // to make edges always active
   const minScale = useMemo(() => [1 / width, 1 / height], [width, height])
 
+  const [keepRatio, setKeepRatio] = useState(false)
+
   const [activated, setActivated] = useState(false)
 
   const activate = useCallback<ReactEventHandler<HTMLImageElement>>(
@@ -99,7 +102,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
   )
 
   const setStartScale = useCallback<(event: OnScaleStart) => void>(
-    ({ set, dragStart }) => {
+    ({ dragStart, set }) => {
       set(transform.scale)
       if (dragStart) dragStart.set(transform.translate)
     },
@@ -114,7 +117,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
   )
 
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(
-    ({ target, beforeTranslate }) => {
+    ({ beforeTranslate, target }) => {
       transform.translate = beforeTranslate
       target.style.transform = `
         translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)
@@ -126,7 +129,8 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
   )
 
   const setCurrentScale = useCallback<(event: OnScale) => void>(
-    ({ drag, target, scale }) => {
+    ({ drag, inputEvent, target, scale }) => {
+      setKeepRatio((inputEvent as MouseEvent).shiftKey)
       transform.translate = drag.beforeTranslate
       const scaleX = scale[0] > minScale[0] ? scale[0] : minScale[0]
       const scaleY = scale[1] > minScale[1] ? scale[1] : minScale[1]
@@ -141,7 +145,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
   )
 
   const setCurrentRotate = useCallback<(event: OnRotate) => void>(
-    ({ target, beforeRotate }) => {
+    ({ beforeRotate, target }) => {
       transform.rotate = beforeRotate
       target.style.transform = `
         translate(${transform.translate[0]}px, ${transform.translate[1]}px)
@@ -157,6 +161,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
     activate,
     activated,
     height,
+    keepRatio,
     left,
     setCurrentRotate,
     setCurrentScale,

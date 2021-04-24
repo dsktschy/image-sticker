@@ -14,6 +14,7 @@ import {
   OnScale,
   OnScaleStart
 } from 'react-moveable'
+import { useStickerObjectListContext } from '../contexts/StickerObjectList'
 import { StickerObject } from '../lib/StickerObject'
 
 export interface AbleProps {
@@ -48,6 +49,8 @@ type UseSticker = (props: {
 }
 
 export const useSticker: UseSticker = ({ stickerObject }) => {
+  const [, stickerObjectListDispatch] = useStickerObjectListContext()
+
   const targetRef = useRef<HTMLImageElement>(null)
 
   const ableProps = useMemo<AbleProps>(
@@ -96,24 +99,36 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const setStartTranslate = useCallback<(event: OnDragStart) => void>(
     ({ set }) => {
+      stickerObjectListDispatch({
+        type: 'BRING_TO_FRONT',
+        payload: stickerObject
+      })
       set(transform.translate)
     },
-    [transform]
+    [transform, stickerObject, stickerObjectListDispatch]
   )
 
   const setStartScale = useCallback<(event: OnScaleStart) => void>(
     ({ dragStart, set }) => {
+      stickerObjectListDispatch({
+        type: 'BRING_TO_FRONT',
+        payload: stickerObject
+      })
       set(transform.scale)
       if (dragStart) dragStart.set(transform.translate)
     },
-    [transform]
+    [transform, stickerObject, stickerObjectListDispatch]
   )
 
   const setStartRotate = useCallback<(event: OnRotateStart) => void>(
     ({ set }) => {
+      stickerObjectListDispatch({
+        type: 'BRING_TO_FRONT',
+        payload: stickerObject
+      })
       set(transform.rotate)
     },
-    [transform]
+    [transform, stickerObject, stickerObjectListDispatch]
   )
 
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(

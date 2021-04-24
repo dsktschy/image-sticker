@@ -87,6 +87,10 @@ export const PresentationalSticker = styled<PresentationalSticker>(
 )`
   position: relative;
 
+  &:last-child {
+    z-index: 3001;
+  }
+
   &__image {
     position: absolute;
     min-width: 0;

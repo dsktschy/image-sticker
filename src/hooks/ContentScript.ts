@@ -34,7 +34,7 @@ export const useContentScript: UseContentScript = () => {
 
   const addStickerObject = useCallback<HandleDropMessageCallback>(
     stickerObject => {
-      stickerObjectListDispatch({ type: 'add', payload: stickerObject })
+      stickerObjectListDispatch({ type: 'ADD', payload: stickerObject })
     },
     [stickerObjectListDispatch]
   )

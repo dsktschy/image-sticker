@@ -17,13 +17,13 @@ export const useEditButtonList: UseEditButtonList = ({ stickerObject }) => {
     ReactEventHandler<HTMLButtonElement>
   >(() => {
     const stickerObjectClone = cloneStickerObject(stickerObject)
-    stickerObjectListDispatch({ type: 'add', payload: stickerObjectClone })
+    stickerObjectListDispatch({ type: 'ADD', payload: stickerObjectClone })
   }, [stickerObject, stickerObjectListDispatch])
 
   const removeStickerObject = useCallback<
     ReactEventHandler<HTMLButtonElement>
   >(() => {
-    stickerObjectListDispatch({ type: 'remove', payload: stickerObject })
+    stickerObjectListDispatch({ type: 'REMOVE', payload: stickerObject })
   }, [stickerObject, stickerObjectListDispatch])
 
   return {

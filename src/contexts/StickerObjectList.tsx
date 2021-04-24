@@ -8,12 +8,13 @@ import React, {
 import { StickerObject } from '../lib/StickerObject'
 import {
   addToStickerObjectList,
+  bringToFrontOfStickerObjectList,
   removeFromStickerObjectList
 } from '../lib/StickerObjectList'
 
 interface StickerObjectListAction {
   payload: StickerObject
-  type: 'add' | 'remove'
+  type: 'ADD' | 'REMOVE' | 'BRING_TO_FRONT'
 }
 
 type Value = [StickerObject[], Dispatch<StickerObjectListAction>]
@@ -31,10 +32,12 @@ const stickerObjectListReducer = (
   { payload, type }: StickerObjectListAction
 ): StickerObject[] => {
   switch (type) {
-    case 'add':
+    case 'ADD':
       return addToStickerObjectList(stickerObjectList, payload)
-    case 'remove':
+    case 'REMOVE':
       return removeFromStickerObjectList(stickerObjectList, payload)
+    case 'BRING_TO_FRONT':
+      return bringToFrontOfStickerObjectList(stickerObjectList, payload)
     default:
       throw new Error('InvalidActionTypeError')
   }

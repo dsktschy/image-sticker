@@ -22,3 +22,17 @@ export const removeFromStickerObjectList: RemoveFromStickerObjectList = (
   stickerObjectList.filter(
     _stickerObject => _stickerObject.id !== stickerObject.id
   )
+
+type BringToFrontOfStickerObjectList = (
+  stickerObjectList: StickerObject[],
+  stickerObject: StickerObject
+) => StickerObject[]
+
+export const bringToFrontOfStickerObjectList: BringToFrontOfStickerObjectList = (
+  stickerObjectList,
+  stickerObject
+) =>
+  addToStickerObjectList(
+    removeFromStickerObjectList(stickerObjectList, stickerObject),
+    stickerObject
+  )

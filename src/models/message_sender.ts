@@ -35,7 +35,7 @@ const sendMessageToBackground: SendMessageToBackground = async messageObject => 
 type SendClickMessageToBackground = () => void
 
 export const sendClickMessageToBackground: SendClickMessageToBackground = () => {
-  const clickMessageObject = createClickMessageObject({})
+  const clickMessageObject = createClickMessageObject()
   sendMessageToBackground(clickMessageObject).catch(error => {
     throw error
   })
@@ -44,7 +44,7 @@ export const sendClickMessageToBackground: SendClickMessageToBackground = () => 
 type SendDropMessageToBackground = (src: string) => void
 
 export const sendDropMessageToBackground: SendDropMessageToBackground = src => {
-  const dropMessageObject = createDropMessageObject({ src })
+  const dropMessageObject = createDropMessageObject(src)
   sendMessageToBackground(dropMessageObject).catch(error => {
     throw error
   })

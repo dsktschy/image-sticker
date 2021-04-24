@@ -9,7 +9,7 @@ import Moveable, {
   OnScaleStart
 } from 'react-moveable'
 import { CornerRotatable } from '../mixins/CornerRotatable'
-import { Removable } from '../mixins/Removable'
+import { Editable } from '../mixins/Editable'
 import { AbleProps, useSticker } from '../hooks/Sticker'
 import { StickerObject } from '../lib/StickerObject'
 
@@ -65,7 +65,7 @@ export const PresentationalSticker = styled<PresentationalSticker>(
       />
       {activated && (
         <Moveable
-          ables={[CornerRotatable, Removable]}
+          ables={[CornerRotatable, Editable]}
           className={`${generatedClassName}__Moveable`}
           draggable
           keepRatio={keepRatio}

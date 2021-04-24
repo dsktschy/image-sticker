@@ -8,13 +8,12 @@ import React, {
 import { StickerObject } from '../lib/StickerObject'
 import {
   addToStickerObjectList,
-  removeFromStickerObjectList,
-  updateInStickerObjectList
+  removeFromStickerObjectList
 } from '../lib/StickerObjectList'
 
 interface StickerObjectListAction {
   payload: StickerObject
-  type: 'add' | 'remove' | 'update'
+  type: 'add' | 'remove'
 }
 
 type Value = [StickerObject[], Dispatch<StickerObjectListAction>]
@@ -36,8 +35,6 @@ const stickerObjectListReducer = (
       return addToStickerObjectList(stickerObjectList, payload)
     case 'remove':
       return removeFromStickerObjectList(stickerObjectList, payload)
-    case 'update':
-      return updateInStickerObjectList(stickerObjectList, payload)
     default:
       throw new Error('InvalidActionTypeError')
   }

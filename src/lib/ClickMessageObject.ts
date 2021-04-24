@@ -1,17 +1,9 @@
 export interface ClickMessageObject {
   type: 'click'
-  payload: {
-    [key: string]: unknown
-  }
 }
 
-type CreateClickMessageObject = (props: {
-  [key: string]: unknown
-}) => ClickMessageObject
+type CreateClickMessageObject = () => ClickMessageObject
 
-export const createClickMessageObject: CreateClickMessageObject = props => ({
-  type: 'click',
-  payload: {
-    ...props
-  }
+export const createClickMessageObject: CreateClickMessageObject = () => ({
+  type: 'click'
 })

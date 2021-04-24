@@ -1,15 +1,13 @@
-import { DropMessageObject } from './DropMessageObject'
+import { nanoid } from 'nanoid'
 
 export interface StickerObject {
   id: string
   src: string
 }
 
-type CreateStickerObject = (
-  dropMessageObject: DropMessageObject
-) => StickerObject
+type CreateStickerObject = (src: string) => StickerObject
 
-export const createStickerObject: CreateStickerObject = ({ payload }) => ({
-  id: payload.id,
-  src: payload.src
+export const createStickerObject: CreateStickerObject = src => ({
+  id: nanoid(),
+  src
 })

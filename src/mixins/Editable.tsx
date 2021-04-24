@@ -1,24 +1,24 @@
 import React from 'react'
 import { Able, MoveableManagerInterface } from 'react-moveable'
-import { RemoveButton } from '../components/RemoveButton'
+import { EditButtonList } from '../components/EditButtonList'
 import { StickerObject } from '../lib/StickerObject'
 
-interface RemovableProps {
-  removable: boolean
+interface EditableProps {
+  editable: boolean
   stickerObject: StickerObject
 }
 
-export const Removable: Able = {
+export const Editable: Able = {
   events: {},
-  name: 'removable',
+  name: 'editable',
   props: {
-    removable: Boolean,
+    editable: Boolean,
     stickerObject: Object
   },
-  render(moveable: MoveableManagerInterface<RemovableProps>) {
+  render(moveable: MoveableManagerInterface<EditableProps>) {
     return (
-      <RemoveButton
-        key="removable"
+      <EditButtonList
+        key="editable"
         rotate={moveable.getRect().rotation}
         stickerObject={moveable.props.stickerObject}
         translate={moveable.state.pos2}

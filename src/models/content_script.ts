@@ -3,6 +3,11 @@ import { ClickMessageObject } from '../lib/ClickMessageObject'
 import { DropMessageObject } from '../lib/DropMessageObject'
 import { createStickerObject, StickerObject } from '../lib/StickerObject'
 
+type CloneStickerObject = (stickerObject: StickerObject) => StickerObject
+
+export const cloneStickerObject: CloneStickerObject = ({ src }) =>
+  createStickerObject(src)
+
 export type HandleClickMessageCallback = () => void
 
 type HandleClickMessage = () => void
@@ -28,8 +33,10 @@ type CreateHandleDropMessage = (
   handleDropMessageCallback: HandleDropMessageCallback
 ) => HandleDropMessage
 
-const createHandleDropMessage: CreateHandleDropMessage = handleDropMessageCallback => dropMessageObject => {
-  const stickerObject = createStickerObject(dropMessageObject)
+const createHandleDropMessage: CreateHandleDropMessage = handleDropMessageCallback => ({
+  payload
+}) => {
+  const stickerObject = createStickerObject(payload)
   handleDropMessageCallback(stickerObject)
 }
 

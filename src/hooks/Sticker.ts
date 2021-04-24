@@ -17,7 +17,7 @@ import {
 import { StickerObject } from '../lib/StickerObject'
 
 export interface AbleProps {
-  removable: boolean
+  editable: boolean
   stickerObject: StickerObject
 }
 
@@ -53,7 +53,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
   const ableProps = useMemo<AbleProps>(
     () => ({
       'corner-rotatable': true,
-      removable: true,
+      editable: true,
       stickerObject
     }),
     [stickerObject]

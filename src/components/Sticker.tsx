@@ -111,8 +111,15 @@ export const PresentationalSticker = styled<PresentationalSticker>(
     opacity: 0;
     transition: opacity 0.1s;
 
-    .moveable-rotation {
-      display: none;
+    & > .moveable-rotation {
+      display: none !important;
+    }
+
+    & > .moveable-control {
+      width: 12px !important;
+      height: 12px !important;
+      margin-top: -6px !important;
+      margin-left: -6px !important;
     }
   }
 

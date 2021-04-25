@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, memo } from 'react'
 import styled from 'styled-components'
 import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
 import { StickerList } from './StickerList'
@@ -11,19 +11,21 @@ type PresentationalContentScript = FC<{
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
 }>
 
-export const PresentationalContentScript = styled<PresentationalContentScript>(
-  ({ className = '', getInputProps, getRootProps }) => (
-    <div {...getRootProps({ className })}>
-      <input {...getInputProps()} />
-      <StickerList />
-    </div>
-  )
-)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2147483647;
-`
+export const PresentationalContentScript = memo(
+  styled<PresentationalContentScript>(
+    ({ className = '', getInputProps, getRootProps }) => (
+      <div {...getRootProps({ className })}>
+        <input {...getInputProps()} />
+        <StickerList />
+      </div>
+    )
+  )`
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2147483647;
+  `
+)
 
 type ContentScript = FC
 

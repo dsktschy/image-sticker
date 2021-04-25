@@ -24,6 +24,7 @@ type PresentationalSticker = FC<{
   onDrag: (event: OnDrag) => void
   onDragStart: (event: OnDragStart) => void
   onLoad: ReactEventHandler<HTMLImageElement>
+  onMouseDown: ReactEventHandler<HTMLDivElement>
   onRotate: (event: OnRotate) => void
   onRotateStart: (event: OnRotateStart) => void
   onScale: (event: OnScale) => void
@@ -46,6 +47,7 @@ export const PresentationalSticker = memo(
       onDrag,
       onDragStart,
       onLoad,
+      onMouseDown,
       onRotate,
       onRotateStart,
       onScale,
@@ -54,7 +56,7 @@ export const PresentationalSticker = memo(
       targetRef,
       width
     }) => (
-      <div className={className}>
+      <div className={className} onMouseDown={onMouseDown}>
         <img
           alt=""
           className={`${generatedClassName}__image`}
@@ -143,6 +145,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
     ableProps,
     activate,
     activated,
+    bringStickerObjectToFront,
     height,
     keepRatio,
     left,
@@ -167,6 +170,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
       onDrag={setCurrentTranslate}
       onDragStart={setStartTranslate}
       onLoad={activate}
+      onMouseDown={bringStickerObjectToFront}
       onRotate={setCurrentRotate}
       onRotateStart={setStartRotate}
       onScale={setCurrentScale}

@@ -6,8 +6,8 @@ import { StickerObject } from '../lib/StickerObject'
 type PresentationalEditButtonList = FC<{
   className?: string
   generatedClassName?: string
-  onClickCloneButton: ReactEventHandler<HTMLButtonElement>
-  onClickRemoveButton: ReactEventHandler<HTMLButtonElement>
+  onMouseDownCaptureCloneButton: ReactEventHandler<HTMLButtonElement>
+  onMouseDownCaptureRemoveButton: ReactEventHandler<HTMLButtonElement>
   rotate: number
   translate: number[]
 }>
@@ -17,15 +17,15 @@ const PresentationalEditButtonList = memo(
     ({
       className = '',
       generatedClassName = className.split(' ')[1],
-      onClickCloneButton,
-      onClickRemoveButton,
+      onMouseDownCaptureCloneButton,
+      onMouseDownCaptureRemoveButton,
       rotate,
       translate
     }) => (
       <div className={className}>
         <button
           className={`${generatedClassName}__clone-button`}
-          onClick={onClickCloneButton}
+          onMouseDownCapture={onMouseDownCaptureCloneButton}
           style={{
             transform: `
             translate(${translate[0]}px, ${translate[1]}px)
@@ -36,7 +36,7 @@ const PresentationalEditButtonList = memo(
         />
         <button
           className={`${generatedClassName}__remove-button`}
-          onClick={onClickRemoveButton}
+          onMouseDownCapture={onMouseDownCaptureRemoveButton}
           style={{
             transform: `
             translate(${translate[0]}px, ${translate[1]}px)
@@ -117,8 +117,8 @@ export const EditButtonList: EditButtonList = ({
 
   return (
     <PresentationalEditButtonList
-      onClickCloneButton={cloneStickerObject}
-      onClickRemoveButton={removeStickerObject}
+      onMouseDownCaptureCloneButton={cloneStickerObject}
+      onMouseDownCaptureRemoveButton={removeStickerObject}
       rotate={rotate}
       translate={translate}
     />

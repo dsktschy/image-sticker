@@ -34,6 +34,7 @@ type UseSticker = (props: {
   ableProps: AbleProps
   activate: ReactEventHandler<HTMLImageElement>
   activated: boolean
+  bringStickerObjectToFront: ReactEventHandler<HTMLDivElement>
   height: number
   keepRatio: boolean
   left: number
@@ -84,6 +85,15 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const [activated, setActivated] = useState(false)
 
+  const bringStickerObjectToFront = useCallback<
+    ReactEventHandler<HTMLDivElement>
+  >(() => {
+    stickerObjectListDispatch({
+      type: 'BRING_TO_FRONT',
+      payload: stickerObject
+    })
+  }, [stickerObject, stickerObjectListDispatch])
+
   const activate = useCallback<ReactEventHandler<HTMLImageElement>>(
     ({ currentTarget }) => {
       const { naturalWidth, naturalHeight, ownerDocument } = currentTarget
@@ -99,36 +109,24 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
 
   const setStartTranslate = useCallback<(event: OnDragStart) => void>(
     ({ set }) => {
-      stickerObjectListDispatch({
-        type: 'BRING_TO_FRONT',
-        payload: stickerObject
-      })
       set(transform.translate)
     },
-    [transform, stickerObject, stickerObjectListDispatch]
+    [transform]
   )
 
   const setStartScale = useCallback<(event: OnScaleStart) => void>(
     ({ dragStart, set }) => {
-      stickerObjectListDispatch({
-        type: 'BRING_TO_FRONT',
-        payload: stickerObject
-      })
       set(transform.scale)
       if (dragStart) dragStart.set(transform.translate)
     },
-    [transform, stickerObject, stickerObjectListDispatch]
+    [transform]
   )
 
   const setStartRotate = useCallback<(event: OnRotateStart) => void>(
     ({ set }) => {
-      stickerObjectListDispatch({
-        type: 'BRING_TO_FRONT',
-        payload: stickerObject
-      })
       set(transform.rotate)
     },
-    [transform, stickerObject, stickerObjectListDispatch]
+    [transform]
   )
 
   const setCurrentTranslate = useCallback<(event: OnDrag) => void>(
@@ -175,6 +173,7 @@ export const useSticker: UseSticker = ({ stickerObject }) => {
     ableProps,
     activate,
     activated,
+    bringStickerObjectToFront,
     height,
     keepRatio,
     left,

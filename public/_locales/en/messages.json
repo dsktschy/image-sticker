@@ -1,0 +1,22 @@
+{
+  "extensionName": {
+    "message": "Image Sticker",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "You can paste any image you want on a web page. No uploading occurs even if you are online, and it can be used offline. It supports moving, scaling, and rotating. Duplication and deletion are also easy.",
+    "description": "Description of the extension."
+  },
+  "defaultPopupDropImagesHere": {
+    "message": "Drop images here",
+    "description": "Information text in default_popup."
+  },
+  "defaultPopupOr": {
+    "message": "or",
+    "description": "Information text in default_popup."
+  },
+  "defaultPopupClickToSelectImages": {
+    "message": "Click to select images",
+    "description": "Information text in default_popup."
+  }
+}

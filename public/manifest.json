@@ -1,6 +1,6 @@
 {
-  "name": "image-sticker",
-  "description": "An extension to put images on web pages like stickers",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
   "version": "0.0.0",
   "manifest_version": 2,
   "permissions": [],
@@ -21,5 +21,6 @@
   },
   "icons": {
     "128": "default_icon.png"
-  }
+  },
+  "default_locale": "en"
 }

@@ -8,6 +8,7 @@ type PresentationalDefaultPopup = FC<{
   generatedClassName?: string
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
+  languages: { [key: string]: string }
   onClick: () => void
 }>
 
@@ -17,16 +18,17 @@ export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
     generatedClassName = className.split(' ')[1],
     getInputProps,
     getRootProps,
+    languages,
     onClick
   }) => (
     <div {...getRootProps({ className, onClick })}>
       <input {...getInputProps()} />
       <p className={`${generatedClassName}__text`}>
-        Drop images here
+        {languages.dropImagesHere}
         <br />
-        or
+        {languages.or}
         <br />
-        Click to select images
+        {languages.clickToSelectImages}
       </p>
     </div>
   )
@@ -49,6 +51,7 @@ export const DefaultPopup: DefaultPopup = () => {
   const {
     getInputProps,
     getRootProps,
+    languages,
     sendClickMessageToBackground
   } = useDefaultPopup()
 
@@ -56,6 +59,7 @@ export const DefaultPopup: DefaultPopup = () => {
     <PresentationalDefaultPopup
       getInputProps={getInputProps}
       getRootProps={getRootProps}
+      languages={languages}
       onClick={sendClickMessageToBackground}
     />
   )

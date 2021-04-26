@@ -30,7 +30,7 @@ type PresentationalSticker = FC<{
   onScale: (event: OnScale) => void
   onScaleStart: (event: OnScaleStart) => void
   src: string
-  targetRef: React.RefObject<HTMLImageElement>
+  targetRef: React.RefObject<HTMLDivElement>
   top: number
   width: number
 }>
@@ -44,6 +44,7 @@ export const PresentationalSticker = memo(
       generatedClassName = className.split(' ')[1],
       height,
       keepRatio,
+      left,
       onDrag,
       onDragStart,
       onLoad,
@@ -54,17 +55,26 @@ export const PresentationalSticker = memo(
       onScaleStart,
       src,
       targetRef,
+      top,
       width
     }) => (
       <div className={className} onMouseDown={onMouseDown}>
         <img
           alt=""
-          className={`${generatedClassName}__image`}
-          height={height}
+          className={`${generatedClassName}__hidden-image`}
           onLoad={onLoad}
-          ref={targetRef}
           src={src}
-          width={width}
+        />
+        <div
+          className={`${generatedClassName}__visible-image`}
+          style={{
+            top: `${top}px`,
+            left: `${left}px`,
+            width: `${width}px`,
+            height: `${height}px`,
+            background: `url(${src}) no-repeat top left/100% 100%`
+          }}
+          ref={targetRef}
         />
         {activated && (
           <Moveable
@@ -94,20 +104,19 @@ export const PresentationalSticker = memo(
       z-index: 3001;
     }
 
-    &__image {
+    &__hidden-image {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: -1 !important;
+      width: 0 !important;
+      height: 0 !important;
+      opacity: 0 !important;
+    }
+
+    &__visible-image {
       position: absolute;
-      min-width: 0;
-      max-width: none;
-      min-height: 0;
-      max-height: none;
-      vertical-align: top;
       cursor: grab;
-      ${({ height, left, top, width }) => `
-      top: ${top}px;
-      left: ${left}px;
-      width: ${width}px;
-      height: ${height}px;
-    `}
 
       &:active {
         cursor: grabbing;

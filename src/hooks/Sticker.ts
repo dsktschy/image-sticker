@@ -44,7 +44,7 @@ type UseSticker = (props: {
   setStartRotate: (event: OnRotateStart) => void
   setStartScale: (event: OnScaleStart) => void
   setStartTranslate: (event: OnDragStart) => void
-  targetRef: RefObject<HTMLImageElement>
+  targetRef: RefObject<HTMLDivElement>
   top: number
   width: number
 }
@@ -52,7 +52,7 @@ type UseSticker = (props: {
 export const useSticker: UseSticker = ({ stickerObject }) => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
-  const targetRef = useRef<HTMLImageElement>(null)
+  const targetRef = useRef<HTMLDivElement>(null)
 
   const ableProps = useMemo<AbleProps>(
     () => ({

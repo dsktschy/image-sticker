@@ -6,8 +6,8 @@ import { StickerObject } from '../lib/StickerObject'
 type PresentationalEditButtonList = FC<{
   className?: string
   generatedClassName?: string
-  onMouseDownCaptureCloneButton: ReactEventHandler<HTMLButtonElement>
-  onMouseDownCaptureRemoveButton: ReactEventHandler<HTMLButtonElement>
+  onMouseDownCaptureCloneButton: ReactEventHandler<HTMLDivElement>
+  onMouseDownCaptureRemoveButton: ReactEventHandler<HTMLDivElement>
   rotate: number
   translate: number[]
 }>
@@ -23,7 +23,7 @@ const PresentationalEditButtonList = memo(
       translate
     }) => (
       <div className={className}>
-        <button
+        <div
           className={`${generatedClassName}__clone-button`}
           onMouseDownCapture={onMouseDownCaptureCloneButton}
           style={{
@@ -34,7 +34,7 @@ const PresentationalEditButtonList = memo(
           `
           }}
         />
-        <button
+        <div
           className={`${generatedClassName}__remove-button`}
           onMouseDownCapture={onMouseDownCaptureRemoveButton}
           style={{
@@ -57,11 +57,6 @@ const PresentationalEditButtonList = memo(
       display: block;
       width: 12px;
       height: 12px;
-      outline: none;
-      border: none;
-      padding: 0;
-      appearance: none;
-      background: transparent;
       transform-origin: 0px 0px;
       cursor: pointer;
 

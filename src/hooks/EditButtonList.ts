@@ -6,22 +6,22 @@ import { cloneStickerObject } from '../models/content_script'
 type UseEditButtonList = (props: {
   stickerObject: StickerObject
 }) => {
-  cloneStickerObject: ReactEventHandler<HTMLButtonElement>
-  removeStickerObject: ReactEventHandler<HTMLButtonElement>
+  cloneStickerObject: ReactEventHandler<HTMLDivElement>
+  removeStickerObject: ReactEventHandler<HTMLDivElement>
 }
 
 export const useEditButtonList: UseEditButtonList = ({ stickerObject }) => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
   const _cloneStickerObject = useCallback<
-    ReactEventHandler<HTMLButtonElement>
+    ReactEventHandler<HTMLDivElement>
   >(() => {
     const stickerObjectClone = cloneStickerObject(stickerObject)
     stickerObjectListDispatch({ type: 'ADD', payload: stickerObjectClone })
   }, [stickerObject, stickerObjectListDispatch])
 
   const removeStickerObject = useCallback<
-    ReactEventHandler<HTMLButtonElement>
+    ReactEventHandler<HTMLDivElement>
   >(() => {
     stickerObjectListDispatch({ type: 'REMOVE', payload: stickerObject })
   }, [stickerObject, stickerObjectListDispatch])

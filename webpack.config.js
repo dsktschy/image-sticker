@@ -8,10 +8,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
-module.exports = {
+module.exports = (env, { mode }) => ({
   // eval is not allowed in extension code,
   // and .map file can not be loaded, so use inline
-  devtool: 'inline-cheap-source-map',
+  devtool: mode === 'production' ? false : 'inline-source-map',
 
   entry: {
     content_script: path.resolve(__dirname, 'src/content_script.tsx'),
@@ -56,4 +56,4 @@ module.exports = {
       openAnalyzer: false
     })
   ]
-}
+})

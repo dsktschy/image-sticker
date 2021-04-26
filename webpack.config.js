@@ -6,7 +6,6 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = (env, { mode }) => ({
   // eval is not allowed in extension code,
@@ -51,9 +50,6 @@ module.exports = (env, { mode }) => ({
     }),
     new CopyWebpackPlugin({
       patterns: [path.resolve(__dirname, 'public')]
-    }),
-    new BundleAnalyzerPlugin({
-      openAnalyzer: false
     })
   ]
 })

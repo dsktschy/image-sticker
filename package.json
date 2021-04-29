@@ -1,7 +1,7 @@
 {
   "name": "image-sticker",
   "version": "0.0.0",
-  "description": "An extension to paste images like stickers on web pages. Supports moving, scaling, and rotating. Duplication and deletion are also easy. No uploading occurs even if you are online.",
+  "description": "An extension to paste images like stickers on a web page. Supports moving, scaling, and rotating. Duplication and deletion are also easy. No uploading occurs even if you are online.",
   "scripts": {
     "dev": "webpack --mode development --watch",
     "build": "webpack --mode production && web-ext build --source-dir dist --overwrite-dest",

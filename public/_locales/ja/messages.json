@@ -4,7 +4,7 @@
     "description": "拡張機能の名前"
   },
   "extensionDescription": {
-    "message": "Webページ上にお好きな画像を貼り付けることができます。移動、拡大縮小、回転に対応。複製、削除も簡単です。オンラインであってもアップロードは一切発生しません。",
+    "message": "Webページ上に画像を貼り付けることができます。移動、拡大縮小、回転に対応。複製、削除も簡単です。アップロードは一切発生しません。",
     "description": "拡張機能の説明"
   },
   "defaultPopupDropImagesHere": {

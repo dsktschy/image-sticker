@@ -4,7 +4,7 @@
     "description": "Name of the extension."
   },
   "extensionDescription": {
-    "message": "You can paste any image you want on a web page. Supports moving, scaling, and rotating. Duplication and deletion are also easy. No uploading occurs even if you are online.",
+    "message": "You can paste any image on a web page. Supports moving, scaling, rotating, duplication, and deletion. No upload will occur.",
     "description": "Description of the extension."
   },
   "defaultPopupDropImagesHere": {

@@ -4,7 +4,7 @@
   "description": "An extension to paste images like stickers on a web page. Supports moving, scaling, and rotating. Duplication and deletion are also easy. No uploading occurs even if you are online.",
   "scripts": {
     "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production && web-ext build --source-dir dist --overwrite-dest",
+    "build": "webpack --mode production && node -e 'require(\"zip-dir\")(\"./dist\", { saveTo: \"./image-sticker.zip\" }, () => {})'",
     "analyze": "webpack --mode production --profile --json > bundle-stats.json && webpack-bundle-analyzer bundle-stats.json dist",
     "test": "jest"
   },
@@ -41,11 +41,11 @@
     "ts-jest": "^26.5.0",
     "ts-loader": "^8.0.15",
     "typescript": "^4.1.3",
-    "web-ext": "^5.5.0",
     "webextension-polyfill-ts": "^0.24.0",
     "webpack": "^5.21.1",
     "webpack-bundle-analyzer": "^4.4.0",
-    "webpack-cli": "^4.5.0"
+    "webpack-cli": "^4.5.0",
+    "zip-dir": "^1.0.2"
   },
   "engines": {
     "node": ">=14",

@@ -103,11 +103,11 @@ dist
 # TernJS port file
 .tern-port
 
-# Web-ext build output
-web-ext-artifacts/
-
 # Visual Studio Code
 .vscode/
 
 # Webpack Bundle Analyzer
 bundle-stats.json
+
+# Artifact file
+image-sticker.zip

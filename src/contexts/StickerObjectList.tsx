@@ -5,12 +5,12 @@ import React, {
   useReducer,
   useContext
 } from 'react'
-import { StickerObject } from '../lib/StickerObject'
+import { StickerObject } from '~/lib/StickerObject'
 import {
   addToStickerObjectList,
   bringToFrontOfStickerObjectList,
   removeFromStickerObjectList
-} from '../lib/StickerObjectList'
+} from '~/lib/StickerObjectList'
 
 interface StickerObjectListAction {
   payload: StickerObject

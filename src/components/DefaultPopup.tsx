@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import styled from 'styled-components'
 import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
-import { useDefaultPopup } from '../hooks/DefaultPopup'
+import { useDefaultPopup } from '~/hooks/DefaultPopup'
 
 type PresentationalDefaultPopup = FC<{
   className?: string

@@ -1,7 +1,7 @@
 import React, { FC, memo, ReactEventHandler } from 'react'
 import styled from 'styled-components'
-import { useEditButtonList } from '../hooks/EditButtonList'
-import { StickerObject } from '../lib/StickerObject'
+import { useEditButtonList } from '~/hooks/EditButtonList'
+import { StickerObject } from '~/lib/StickerObject'
 
 type PresentationalEditButtonList = FC<{
   className?: string

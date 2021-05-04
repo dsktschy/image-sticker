@@ -1,8 +1,8 @@
 import React, { FC, memo } from 'react'
 import styled from 'styled-components'
-import { Sticker } from './Sticker'
-import { useStickerList } from '../hooks/StickerList'
-import { StickerObject } from '../lib/StickerObject'
+import { Sticker } from '~/components/Sticker'
+import { useStickerList } from '~/hooks/StickerList'
+import { StickerObject } from '~/lib/StickerObject'
 
 type PresentationalStickerList = FC<{
   className?: string

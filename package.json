@@ -31,6 +31,7 @@
     "cssnano": "^5.0.2",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
+    "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "html-webpack-plugin": "^5.0.0",
     "husky": "^5.0.8",

@@ -1,7 +1,7 @@
 import { browser } from 'webextension-polyfill-ts'
-import { ClickMessageObject } from '../lib/ClickMessageObject'
-import { DropMessageObject } from '../lib/DropMessageObject'
-import { createStickerObject, StickerObject } from '../lib/StickerObject'
+import { ClickMessageObject } from '~/lib/ClickMessageObject'
+import { DropMessageObject } from '~/lib/DropMessageObject'
+import { createStickerObject, StickerObject } from '~/lib/StickerObject'
 
 type CloneStickerObject = (stickerObject: StickerObject) => StickerObject
 

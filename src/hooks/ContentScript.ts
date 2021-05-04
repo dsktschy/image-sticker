@@ -4,13 +4,13 @@ import {
   DropzoneRootProps,
   useDropzone
 } from 'react-dropzone'
-import { useStickerObjectListContext } from '../contexts/StickerObjectList'
+import { useStickerObjectListContext } from '~/contexts/StickerObjectList'
 import {
   initializeContentScript,
   HandleClickMessageCallback,
   HandleDropMessageCallback
-} from '../models/content_script'
-import { readFileList } from '../models/file_reader'
+} from '~/models/content_script'
+import { readFileList } from '~/models/file_reader'
 
 type UseContentScript = () => {
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps

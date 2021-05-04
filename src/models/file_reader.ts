@@ -1,4 +1,4 @@
-import { sendDropMessageToBackground } from './message_sender'
+import { sendDropMessageToBackground } from '~/models/message_sender'
 
 type CreateHandleLoad = (
   handleLoadCallback: () => void

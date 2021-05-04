@@ -1,7 +1,7 @@
 import React from 'react'
 import { Able, MoveableManagerInterface } from 'react-moveable'
-import { EditButtonList } from '../components/EditButtonList'
-import { StickerObject } from '../lib/StickerObject'
+import { EditButtonList } from '~/components/EditButtonList'
+import { StickerObject } from '~/lib/StickerObject'
 
 interface EditableProps {
   editable: boolean

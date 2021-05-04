@@ -1,7 +1,7 @@
 import { ReactEventHandler, useCallback } from 'react'
-import { useStickerObjectListContext } from '../contexts/StickerObjectList'
-import { StickerObject } from '../lib/StickerObject'
-import { cloneStickerObject } from '../models/content_script'
+import { useStickerObjectListContext } from '~/contexts/StickerObjectList'
+import { StickerObject } from '~/lib/StickerObject'
+import { cloneStickerObject } from '~/models/content_script'
 
 type UseEditButtonList = (props: {
   stickerObject: StickerObject

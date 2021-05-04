@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts'
-import { sendMessageToActiveTabInCurrentWindow } from './message_sender'
+import { sendMessageToActiveTabInCurrentWindow } from '~/models/message_sender'
 
 type InitializeBackground = () => () => void
 

@@ -1,3 +1,3 @@
-import { initializeBackground } from './models/background'
+import { initializeBackground } from '~/models/background'
 
 initializeBackground()

@@ -1,8 +1,8 @@
 import React, { FC, memo } from 'react'
 import styled from 'styled-components'
 import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
-import { StickerList } from './StickerList'
-import { useContentScript } from '../hooks/ContentScript'
+import { StickerList } from '~/components/StickerList'
+import { useContentScript } from '~/hooks/ContentScript'
 
 type PresentationalContentScript = FC<{
   className?: string

@@ -1,5 +1,5 @@
-import { useStickerObjectListContext } from '../contexts/StickerObjectList'
-import { StickerObject } from '../lib/StickerObject'
+import { useStickerObjectListContext } from '~/contexts/StickerObjectList'
+import { StickerObject } from '~/lib/StickerObject'
 
 type UseStickerList = () => {
   stickerObjectList: StickerObject[]

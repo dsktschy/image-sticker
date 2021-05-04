@@ -8,10 +8,10 @@ import Moveable, {
   OnScale,
   OnScaleStart
 } from 'react-moveable'
-import { CornerRotatable } from '../mixins/CornerRotatable'
-import { Editable } from '../mixins/Editable'
-import { AbleProps, useSticker } from '../hooks/Sticker'
-import { StickerObject } from '../lib/StickerObject'
+import { AbleProps, useSticker } from '~/hooks/Sticker'
+import { StickerObject } from '~/lib/StickerObject'
+import { CornerRotatable } from '~/mixins/CornerRotatable'
+import { Editable } from '~/mixins/Editable'
 
 type PresentationalSticker = FC<{
   ableProps: AbleProps

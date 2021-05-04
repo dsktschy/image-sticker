@@ -1,4 +1,4 @@
-import { StickerObject } from './StickerObject'
+import { StickerObject } from '~/lib/StickerObject'
 
 type AddToStickerObjectList = (
   stickerObjectList: StickerObject[],

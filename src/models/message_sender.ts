@@ -2,11 +2,11 @@ import { browser, Tabs } from 'webextension-polyfill-ts'
 import {
   ClickMessageObject,
   createClickMessageObject
-} from '../lib/ClickMessageObject'
+} from '~/lib/ClickMessageObject'
 import {
   DropMessageObject,
   createDropMessageObject
-} from '../lib/DropMessageObject'
+} from '~/lib/DropMessageObject'
 
 type SendMessageToActiveTabInCurrentWindow = (
   messageObject: ClickMessageObject | DropMessageObject

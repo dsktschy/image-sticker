@@ -3,9 +3,9 @@ import {
   DropzoneRootProps,
   useDropzone
 } from 'react-dropzone'
-import { languages } from '../models/default_popup'
-import { readFileList } from '../models/file_reader'
-import { sendClickMessageToBackground } from '../models/message_sender'
+import { languages } from '~/models/default_popup'
+import { readFileList } from '~/models/file_reader'
+import { sendClickMessageToBackground } from '~/models/message_sender'
 
 type UseDefaultPopup = () => {
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps

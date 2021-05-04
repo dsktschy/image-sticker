@@ -66,6 +66,9 @@ module.exports = (env, { mode }) => ({
   },
 
   resolve: {
+    alias: {
+      '~': path.resolve(__dirname, 'src')
+    },
     // Enable to import without extentions
     extensions: ['.ts', '.tsx', '.js', 'jsx']
   },

@@ -14,8 +14,8 @@ import {
   OnScale,
   OnScaleStart
 } from 'react-moveable'
-import { useStickerObjectListContext } from '../contexts/StickerObjectList'
-import { StickerObject } from '../lib/StickerObject'
+import { useStickerObjectListContext } from '~/contexts/StickerObjectList'
+import { StickerObject } from '~/lib/StickerObject'
 
 export interface AbleProps {
   editable: boolean

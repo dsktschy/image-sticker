@@ -7,7 +7,11 @@
     "lib": ["es2020", "dom"],
     "strict": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/.*.js"]

@@ -6,6 +6,11 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components')
+  .default
+const styledComponentsTransformer = createStyledComponentsTransformer({
+  minify: true
+})
 
 module.exports = (env, { mode }) => ({
   // eval is not allowed in extension code,
@@ -27,11 +32,35 @@ module.exports = (env, { mode }) => ({
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader'
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              getCustomTransformers() {
+                return { before: [styledComponentsTransformer] }
+              }
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('cssnano')({
+                    preset: 'default'
+                  })
+                ]
+              }
+            }
+          }
+        ]
       }
     ]
   },

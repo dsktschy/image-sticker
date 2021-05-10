@@ -1,4 +1,4 @@
-import { browser, Tabs } from 'webextension-polyfill-ts'
+import { browser } from 'webextension-polyfill-ts'
 import {
   ClickMessageObject,
   createClickMessageObject
@@ -13,8 +13,7 @@ type SendMessageToActiveTabInCurrentWindow = (
 ) => Promise<void>
 
 export const sendMessageToActiveTabInCurrentWindow: SendMessageToActiveTabInCurrentWindow = async messageObject => {
-  let tabList: Tabs.Tab[] = []
-  tabList = await browser.tabs.query({
+  const tabList = await browser.tabs.query({
     active: true,
     currentWindow: true
   })

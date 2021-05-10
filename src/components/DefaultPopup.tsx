@@ -32,7 +32,7 @@ export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
         <path d="M0 0V32L8 24L16 32L32 16L48 32V0H0Z" fill="#5984BE" />
         <circle cx="16" cy="13" r="8" fill="#F0B82D" />
       </svg>
-      <input {...getInputProps()} />
+      <input {...getInputProps({ id: 'imgstckr-DefaultPopup__input' })} />
       <p className={`${generatedClassName}__text`}>
         {languages.dropImagesHere}
         <br />

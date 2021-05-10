@@ -12,7 +12,7 @@ type PresentationalStickerList = FC<{
 
 export const PresentationalStickerList = styled<PresentationalStickerList>(
   ({ className = '', stickerObjectList }) => (
-    <div className={className}>
+    <div className={className} id="imgstckr-StickerList">
       {stickerObjectList.map(stickerObject => (
         <Sticker key={stickerObject.id} stickerObject={stickerObject} />
       ))}

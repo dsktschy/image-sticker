@@ -15,7 +15,7 @@ export const PresentationalContentScript = memo(
   styled<PresentationalContentScript>(
     ({ className = '', getInputProps, getRootProps }) => (
       <div {...getRootProps({ className })}>
-        <input {...getInputProps()} />
+        <input {...getInputProps({ id: 'imgstckr-ContentScript__input' })} />
         <StickerList />
       </div>
     )

@@ -1,17 +1,24 @@
+import { useCallback, useEffect, useState } from 'react'
 import {
   DropzoneInputProps,
   DropzoneRootProps,
   useDropzone
 } from 'react-dropzone'
-import { languages } from '~/models/default_popup'
+import {
+  HandleRecieveResponse,
+  initializeDefaultPopup,
+  languages,
+  sendPopupClickedMessageToBackground
+} from '~/models/default_popup'
 import { readFileList } from '~/models/file_reader'
-import { sendClickMessageToBackground } from '~/models/message_sender'
 
 type UseDefaultPopup = () => {
+  onAvailablePage: boolean
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
   languages: typeof languages
-  sendClickMessageToBackground: typeof sendClickMessageToBackground
+  ready: boolean
+  openContentScriptFileDialog: () => void
 }
 
 export const useDefaultPopup: UseDefaultPopup = () => {
@@ -22,10 +29,33 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     onDrop: readFileList
   })
 
+  const [ready, setReady] = useState(false)
+
+  const [onAvailablePage, setOnAvailablePage] = useState(false)
+
+  const noop = useCallback<HandleRecieveResponse>(() => {
+    // No operation
+  }, [])
+
+  const openContentScriptFileDialog = useCallback(() => {
+    sendPopupClickedMessageToBackground(noop)
+  }, [noop])
+
+  const updateState = useCallback<HandleRecieveResponse>(result => {
+    setReady(true)
+    setOnAvailablePage(result)
+  }, [])
+
+  useEffect(() => {
+    return initializeDefaultPopup(updateState)
+  }, [updateState])
+
   return {
+    onAvailablePage,
     getInputProps,
     getRootProps,
     languages,
-    sendClickMessageToBackground
+    ready,
+    openContentScriptFileDialog
   }
 }

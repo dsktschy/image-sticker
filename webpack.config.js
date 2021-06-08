@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
@@ -24,7 +25,9 @@ module.exports = (env, { mode }) => ({
   },
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: env.IMGSTCKR_TEST
+      ? path.resolve(__dirname, 'dist/test')
+      : path.resolve(__dirname, 'dist/production'),
     filename: '[name].js'
   },
 
@@ -81,7 +84,24 @@ module.exports = (env, { mode }) => ({
       title: 'Image Sticker'
     }),
     new CopyWebpackPlugin({
-      patterns: [path.resolve(__dirname, 'public')]
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'public'),
+          globOptions: {
+            ignore: ['**/public/manifests']
+          }
+        },
+        // Switch how to inject content_script.js
+        env.IMGSTCKR_TEST
+          ? {
+              from: path.resolve(__dirname, 'public/manifests/test.json'),
+              to: path.resolve(__dirname, 'dist/test/manifest.json')
+            }
+          : {
+              from: path.resolve(__dirname, 'public/manifests/production.json'),
+              to: path.resolve(__dirname, 'dist/production/manifest.json')
+            }
+      ]
     })
   ]
 })

@@ -1,22 +1,18 @@
 {
   "extensionName": {
     "message": "Image Sticker",
-    "description": "Name of the extension."
+    "description": "Name of the extension"
   },
   "extensionDescription": {
     "message": "You can paste any image on a web page. Supports moving, scaling, rotating, duplication, and deletion. No upload will occur.",
-    "description": "Description of the extension."
+    "description": "Description of the extension"
   },
-  "defaultPopupDropImagesHere": {
-    "message": "Drop images here",
-    "description": "Information text in default_popup."
+  "defaultPopupTextOnAvailablePage": {
+    "message": "Drop images here\nor\nClick to select images",
+    "description": "Information text in default_popup when is opened on available page"
   },
-  "defaultPopupOr": {
-    "message": "or",
-    "description": "Information text in default_popup."
-  },
-  "defaultPopupClickToSelectImages": {
-    "message": "Click to select images",
-    "description": "Information text in default_popup."
+  "defaultPopupTextOnNotAvailablePage": {
+    "message": "Not available on this page",
+    "description": "Information text in default_popup when is opened on　not available page"
   }
 }

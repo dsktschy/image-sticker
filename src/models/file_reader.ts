@@ -1,4 +1,5 @@
-import { sendDropMessageToBackground } from '~/models/message_sender'
+import { createDroppedOnPopupMessageObject } from '~/lib/DroppedOnPopupMessageObject'
+import { sendMessageToBackground } from '~/models/message_sender'
 
 type CreateHandleLoad = (
   handleLoadCallback: () => void
@@ -10,8 +11,12 @@ const createHandleLoad: CreateHandleLoad = handleLoadCallback => ({
   if (!target) throw new Error('FileLoadingError')
   const { result } = target
   if (typeof result !== 'string') throw new Error('FileDataURLError')
-  sendDropMessageToBackground(result)
-  handleLoadCallback()
+  const droppedOnPopupMessageObject = createDroppedOnPopupMessageObject(result)
+  sendMessageToBackground(droppedOnPopupMessageObject)
+    .then(handleLoadCallback)
+    .catch(error => {
+      throw error
+    })
 }
 
 type ReadFileList = (fileList: File[]) => void

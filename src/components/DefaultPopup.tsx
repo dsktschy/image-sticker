@@ -5,23 +5,27 @@ import { useDefaultPopup } from '~/hooks/DefaultPopup'
 
 type PresentationalDefaultPopup = FC<{
   className?: string
+  disabled: boolean
   generatedClassName?: string
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
   languages: { [key: string]: string }
   onClick: () => void
+  ready: boolean
 }>
 
 export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
   ({
     className = '',
+    disabled,
     generatedClassName = className.split(' ')[1],
     getInputProps,
     getRootProps,
     languages,
-    onClick
+    onClick,
+    ready
   }) => (
-    <div {...getRootProps({ className, onClick })}>
+    <div {...getRootProps({ className })}>
       <svg
         className={`${generatedClassName}__image`}
         viewBox="0 0 48 48"
@@ -32,14 +36,22 @@ export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
         <path d="M0 0V32L8 24L16 32L32 16L48 32V0H0Z" fill="#5984BE" />
         <circle cx="16" cy="13" r="8" fill="#F0B82D" />
       </svg>
-      <input {...getInputProps({ id: 'imgstckr-DefaultPopup__input' })} />
-      <p className={`${generatedClassName}__text`}>
-        {languages.dropImagesHere}
-        <br />
-        {languages.or}
-        <br />
-        {languages.clickToSelectImages}
-      </p>
+      {ready && (
+        <>
+          <input
+            {...getInputProps({ disabled, id: 'imgstckr-DefaultPopup__input' })}
+          />
+          {disabled ? (
+            <p className={`${generatedClassName}__text`}>
+              {languages.textOnNotAvailablePage}
+            </p>
+          ) : (
+            <p className={`${generatedClassName}__text`} onClick={onClick}>
+              {languages.textOnAvailablePage}
+            </p>
+          )}
+        </>
+      )}
     </div>
   )
 )`
@@ -48,8 +60,8 @@ export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
     top: 0;
     left: 0;
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 240px;
+    height: 240px;
     opacity: 0.2;
     filter: saturate(2);
   }
@@ -64,6 +76,8 @@ export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
     margin: 0;
     font: bold 14px/1.75 sans-serif;
     text-align: center;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
   }
 `
 
@@ -71,18 +85,22 @@ type DefaultPopup = FC
 
 export const DefaultPopup: DefaultPopup = () => {
   const {
+    onAvailablePage,
     getInputProps,
     getRootProps,
     languages,
-    sendClickMessageToBackground
+    ready,
+    openContentScriptFileDialog
   } = useDefaultPopup()
 
   return (
     <PresentationalDefaultPopup
+      disabled={!onAvailablePage}
       getInputProps={getInputProps}
       getRootProps={getRootProps}
       languages={languages}
-      onClick={sendClickMessageToBackground}
+      onClick={openContentScriptFileDialog}
+      ready={ready}
     />
   )
 }

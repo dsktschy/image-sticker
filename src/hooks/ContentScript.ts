@@ -7,8 +7,8 @@ import {
 import { useStickerObjectListContext } from '~/contexts/StickerObjectList'
 import {
   initializeContentScript,
-  HandleClickMessageCallback,
-  HandleDropMessageCallback
+  HandlePopupClickedMessageCallback,
+  HandleDroppedOnPopupMessageCallback
 } from '~/models/content_script'
 import { readFileList } from '~/models/file_reader'
 
@@ -28,11 +28,11 @@ export const useContentScript: UseContentScript = () => {
     onDrop: readFileList
   })
 
-  const noop = useCallback<HandleClickMessageCallback>(() => {
-    // No operation at this time
+  const noop = useCallback<HandlePopupClickedMessageCallback>(() => {
+    // No operation
   }, [])
 
-  const addStickerObject = useCallback<HandleDropMessageCallback>(
+  const addStickerObject = useCallback<HandleDroppedOnPopupMessageCallback>(
     stickerObject => {
       stickerObjectListDispatch({ type: 'ADD', payload: stickerObject })
     },

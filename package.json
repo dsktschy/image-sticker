@@ -4,9 +4,9 @@
   "description": "An extension to paste images like stickers on a web page. Supports moving, scaling, and rotating. Duplication and deletion are also easy. No uploading occurs even if you are online.",
   "scripts": {
     "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production && node -e 'require(\"zip-dir\")(\"./dist\", { saveTo: \"./image-sticker.zip\" }, () => {})'",
+    "build": "webpack --mode production && node -e 'require(\"zip-dir\")(\"./dist/production\", { saveTo: \"./image-sticker.zip\" }, () => {})'",
     "analyze": "webpack --mode production --profile --json > bundle-stats.json && webpack-bundle-analyzer bundle-stats.json dist",
-    "test": "jest"
+    "test": "webpack --mode production --env IMGSTCKR_TEST && jest"
   },
   "repository": {
     "type": "git",

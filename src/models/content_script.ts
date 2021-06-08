@@ -1,6 +1,7 @@
 import { browser } from 'webextension-polyfill-ts'
-import { ClickMessageObject } from '~/lib/ClickMessageObject'
-import { DropMessageObject } from '~/lib/DropMessageObject'
+import { DroppedOnPopupMessageObject } from '~/lib/DroppedOnPopupMessageObject'
+import { MessageObject } from '~/lib/MessageObject'
+import { PopupClickedMessageObject } from '~/lib/PopupClickedMessageObject'
 import { createStickerObject, StickerObject } from '~/lib/StickerObject'
 
 type CloneStickerObject = (stickerObject: StickerObject) => StickerObject
@@ -8,77 +9,90 @@ type CloneStickerObject = (stickerObject: StickerObject) => StickerObject
 export const cloneStickerObject: CloneStickerObject = ({ src }) =>
   createStickerObject(src)
 
-export type HandleClickMessageCallback = () => void
+export type HandlePopupClickedMessageCallback = () => void
 
-type HandleClickMessage = () => void
+type HandlePopupClickedMessage = (
+  popupClickedMessageObject: PopupClickedMessageObject
+) => Promise<boolean>
 
-type CreateHandleClickMessage = (
+type CreateHandlePopupClickedMessage = (
   openFileDialog: () => void,
-  handleClickMessageCallback: HandleClickMessageCallback
-) => HandleClickMessage
+  handlePopupClickedMessageCallback: HandlePopupClickedMessageCallback
+) => HandlePopupClickedMessage
 
-const createHandleClickMessage: CreateHandleClickMessage = (
+const createHandlePopupClickedMessage: CreateHandlePopupClickedMessage = (
   openFileDialog,
-  handleClickMessageCallback
+  handlePopupClickedMessageCallback
 ) => () => {
   openFileDialog()
-  handleClickMessageCallback()
+  handlePopupClickedMessageCallback()
+  return Promise.resolve(true)
 }
 
-export type HandleDropMessageCallback = (stickerObject: StickerObject) => void
+export type HandleDroppedOnPopupMessageCallback = (
+  stickerObject: StickerObject
+) => void
 
-type HandleDropMessage = (dropMessageObject: DropMessageObject) => void
+type HandleDroppedOnPopupMessage = (
+  droppedOnPopupMessageObject: DroppedOnPopupMessageObject
+) => Promise<boolean>
 
-type CreateHandleDropMessage = (
-  handleDropMessageCallback: HandleDropMessageCallback
-) => HandleDropMessage
+type CreateHandleDroppedOnPopupMessage = (
+  handleDroppedOnPopupMessageCallback: HandleDroppedOnPopupMessageCallback
+) => HandleDroppedOnPopupMessage
 
-const createHandleDropMessage: CreateHandleDropMessage = handleDropMessageCallback => ({
+const createHandleDroppedOnPopupMessage: CreateHandleDroppedOnPopupMessage = handleDroppedOnPopupMessageCallback => ({
   payload
 }) => {
   const stickerObject = createStickerObject(payload)
-  handleDropMessageCallback(stickerObject)
+  handleDroppedOnPopupMessageCallback(stickerObject)
+  return Promise.resolve(true)
 }
 
-type HandleMessage = (
-  messageObject: ClickMessageObject | DropMessageObject
-) => void
+type HandleMessage = (messageObject: MessageObject) => Promise<boolean>
 
 type CreateHandleMessage = (
-  handleClickMessage: HandleClickMessage,
-  handleDropMessage: HandleDropMessage
+  handlePopupClickedMessage: HandlePopupClickedMessage,
+  handleDroppedOnPopupMessage: HandleDroppedOnPopupMessage
 ) => HandleMessage
 
 const createHandleMessage: CreateHandleMessage = (
-  handleClickMessage,
-  handleDropMessage
-) => messageObject => {
-  switch (messageObject.type) {
-    case 'click':
-      handleClickMessage()
-      break
-    case 'drop':
-      handleDropMessage(messageObject)
-      break
-    default:
-      throw new Error('InvalidMessageTypeError')
-  }
-}
+  handlePopupClickedMessage,
+  handleDroppedOnPopupMessage
+) => messageObject =>
+  Promise.resolve()
+    .then(() => {
+      switch (messageObject.type) {
+        case 'popupClicked':
+          return handlePopupClickedMessage(messageObject)
+        case 'droppedOnPopup':
+          return handleDroppedOnPopupMessage(messageObject)
+        case 'popupOpened':
+        default:
+          throw new Error('InvalidMessageTypeError')
+      }
+    })
+    .catch(error => {
+      throw error
+    })
 
 type InitializeContentScript = (
   openFileDialog: () => void,
-  handleClickMessageCallback: HandleClickMessageCallback,
-  handleDropMessageCallback: HandleDropMessageCallback
+  handlePopupClickedMessageCallback: HandlePopupClickedMessageCallback,
+  handleDroppedOnPopupMessageCallback: HandleDroppedOnPopupMessageCallback
 ) => () => void
 
 export const initializeContentScript: InitializeContentScript = (
   openFileDialog,
-  handleClickMessageCallback,
-  handleDropMessageCallback
+  handlePopupClickedMessageCallback,
+  handleDroppedOnPopupMessageCallback
 ) => {
   const handleMessage = createHandleMessage(
-    createHandleClickMessage(openFileDialog, handleClickMessageCallback),
-    createHandleDropMessage(handleDropMessageCallback)
+    createHandlePopupClickedMessage(
+      openFileDialog,
+      handlePopupClickedMessageCallback
+    ),
+    createHandleDroppedOnPopupMessage(handleDroppedOnPopupMessageCallback)
   )
   const runtimeOnMessage = browser.runtime.onMessage
   runtimeOnMessage.addListener(handleMessage)

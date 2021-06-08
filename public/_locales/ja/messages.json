@@ -7,16 +7,12 @@
     "message": "Webページ上に画像を貼り付けることができます。移動、拡大縮小、回転に対応。複製、削除も簡単です。アップロードは一切発生しません。",
     "description": "拡張機能の説明"
   },
-  "defaultPopupDropImagesHere": {
-    "message": "ここに画像をドロップ",
-    "description": "default_popupに表示される案内文"
+  "defaultPopupTextOnAvailablePage": {
+    "message": "ここに画像をドロップ\nまたは\nここをクリックで画像を選択",
+    "description": "default_popupに表示される案内文。対応ページ上で開いた場合"
   },
-  "defaultPopupOr": {
-    "message": "または",
-    "description": "default_popupに表示される案内文"
-  },
-  "defaultPopupClickToSelectImages": {
-    "message": "ここをクリックで画像を選択",
-    "description": "default_popupに表示される案内文"
+  "defaultPopupTextOnNotAvailablePage": {
+    "message": "このページでは利用できません",
+    "description": "default_popupに表示される案内文。非対応ページ上で開いた場合"
   }
 }

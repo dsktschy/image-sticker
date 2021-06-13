@@ -1,7 +1,7 @@
 import path from 'path'
 import { Browser, launch, Page } from 'puppeteer'
 
-describe('E2E tests to see whether images are displayed', () => {
+describe('E2E tests to see whether images are displayed correctly', () => {
   // Expected behaviour of content script can't be gotten
   // without content_script settings in manifest.json
   // because of following reasons

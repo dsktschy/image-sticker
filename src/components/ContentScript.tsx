@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react'
 import styled from 'styled-components'
 import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
-import { StickerList } from '~/components/StickerList'
+import StickerList from '~/components/StickerList'
 import { useContentScript } from '~/hooks/ContentScript'
 
 const MemoizedStickerList = memo(StickerList)
@@ -31,7 +31,7 @@ const MemoizedPresentationalContentScript = memo(PresentationalContentScript)
 
 type ContentScript = FC
 
-export const ContentScript: ContentScript = () => {
+const ContentScript: ContentScript = () => {
   const { getInputProps, getRootProps } = useContentScript()
 
   return (
@@ -41,3 +41,5 @@ export const ContentScript: ContentScript = () => {
     />
   )
 }
+
+export default ContentScript

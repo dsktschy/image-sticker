@@ -150,7 +150,7 @@ type Sticker = FC<{
   stickerObject: StickerObject
 }>
 
-export const Sticker: Sticker = ({ stickerObject }) => {
+const Sticker: Sticker = ({ stickerObject }) => {
   const {
     ableProps,
     activate,
@@ -192,3 +192,5 @@ export const Sticker: Sticker = ({ stickerObject }) => {
     />
   )
 }
+
+export default Sticker

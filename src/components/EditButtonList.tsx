@@ -101,7 +101,7 @@ type EditButtonList = FC<{
   translate: number[]
 }>
 
-export const EditButtonList: EditButtonList = ({
+const EditButtonList: EditButtonList = ({
   rotate,
   stickerObject,
   translate
@@ -119,3 +119,5 @@ export const EditButtonList: EditButtonList = ({
     />
   )
 }
+
+export default EditButtonList

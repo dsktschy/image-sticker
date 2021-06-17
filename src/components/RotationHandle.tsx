@@ -50,7 +50,7 @@ type RotationHandle = FC<{
   translateBeforeRotation: number[]
 }>
 
-export const RotationHandle: RotationHandle = ({
+const RotationHandle: RotationHandle = ({
   rotate,
   scale,
   translateAfterRotation,
@@ -65,3 +65,5 @@ export const RotationHandle: RotationHandle = ({
     />
   )
 }
+
+export default RotationHandle

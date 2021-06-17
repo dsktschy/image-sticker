@@ -2,7 +2,7 @@ import 'sanitize.css'
 import 'reset-css'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { DefaultPopup } from '~/components/DefaultPopup'
+import DefaultPopup from '~/components/DefaultPopup'
 
 const App = () => <DefaultPopup />
 

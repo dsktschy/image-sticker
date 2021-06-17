@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import styled from 'styled-components'
-import { Sticker } from '~/components/Sticker'
+import Sticker from '~/components/Sticker'
 import { useStickerList } from '~/hooks/StickerList'
 import { StickerObject } from '~/lib/StickerObject'
 
@@ -22,8 +22,10 @@ const PresentationalStickerList = styled<PresentationalStickerList>(
 
 type StickerList = FC
 
-export const StickerList: StickerList = () => {
+const StickerList: StickerList = () => {
   const { stickerObjectList } = useStickerList()
 
   return <PresentationalStickerList stickerObjectList={stickerObjectList} />
 }
+
+export default StickerList

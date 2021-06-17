@@ -5,7 +5,7 @@ import {
   Rotatable,
   RotatableProps
 } from 'react-moveable'
-import { RotationHandle } from '~/components/RotationHandle'
+import RotationHandle from '~/components/RotationHandle'
 
 const translateOffset = 8
 

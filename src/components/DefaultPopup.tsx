@@ -83,7 +83,7 @@ const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
 
 type DefaultPopup = FC
 
-export const DefaultPopup: DefaultPopup = () => {
+const DefaultPopup: DefaultPopup = () => {
   const {
     onAvailablePage,
     getInputProps,
@@ -104,3 +104,5 @@ export const DefaultPopup: DefaultPopup = () => {
     />
   )
 }
+
+export default DefaultPopup

@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { ContentScript } from '~/components/ContentScript'
+import ContentScript from '~/components/ContentScript'
 import { StickerObjectListContextProvider } from '~/contexts/StickerObjectList'
 
 const App = () => (

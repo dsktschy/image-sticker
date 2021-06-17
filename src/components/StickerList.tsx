@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react'
+import React, { FC } from 'react'
 import styled from 'styled-components'
 import { Sticker } from '~/components/Sticker'
 import { useStickerList } from '~/hooks/StickerList'
@@ -22,8 +22,8 @@ const PresentationalStickerList = styled<PresentationalStickerList>(
 
 type StickerList = FC
 
-export const StickerList: StickerList = memo(() => {
+export const StickerList: StickerList = () => {
   const { stickerObjectList } = useStickerList()
 
   return <PresentationalStickerList stickerObjectList={stickerObjectList} />
-})
+}

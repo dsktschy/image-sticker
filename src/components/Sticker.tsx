@@ -35,115 +35,115 @@ type PresentationalSticker = FC<{
   width: number
 }>
 
-const PresentationalSticker = memo(
-  styled<PresentationalSticker>(
-    ({
-      ableProps,
-      activated,
-      className = '',
-      generatedClassName = className.split(' ')[1],
-      height,
-      keepRatio,
-      left,
-      onDrag,
-      onDragStart,
-      onLoad,
-      onMouseDown,
-      onRotate,
-      onRotateStart,
-      onScale,
-      onScaleStart,
-      src,
-      targetRef,
-      top,
-      width
-    }) => (
-      <div className={className} onMouseDown={onMouseDown}>
-        <img
-          alt=""
-          className={`${generatedClassName}__hidden-image`}
-          onLoad={onLoad}
-          src={src}
+const PresentationalSticker = styled<PresentationalSticker>(
+  ({
+    ableProps,
+    activated,
+    className = '',
+    generatedClassName = className.split(' ')[1],
+    height,
+    keepRatio,
+    left,
+    onDrag,
+    onDragStart,
+    onLoad,
+    onMouseDown,
+    onRotate,
+    onRotateStart,
+    onScale,
+    onScaleStart,
+    src,
+    targetRef,
+    top,
+    width
+  }) => (
+    <div className={className} onMouseDown={onMouseDown}>
+      <img
+        alt=""
+        className={`${generatedClassName}__hidden-image`}
+        onLoad={onLoad}
+        src={src}
+      />
+      <div
+        className={`${generatedClassName}__visible-image`}
+        style={{
+          top: `${top}px`,
+          left: `${left}px`,
+          width: `${width}px`,
+          height: `${height}px`,
+          background: `url(${src}) no-repeat top left/100% 100%`
+        }}
+        ref={targetRef}
+      />
+      {activated && (
+        <Moveable
+          ables={[CornerRotatable, Editable]}
+          className={`${generatedClassName}__Moveable`}
+          draggable
+          keepRatio={keepRatio}
+          onDrag={onDrag}
+          onDragStart={onDragStart}
+          onRotate={onRotate}
+          onRotateStart={onRotateStart}
+          onScale={onScale}
+          onScaleStart={onScaleStart}
+          origin={false}
+          props={ableProps}
+          rotatable
+          scalable
+          target={targetRef}
         />
-        <div
-          className={`${generatedClassName}__visible-image`}
-          style={{
-            top: `${top}px`,
-            left: `${left}px`,
-            width: `${width}px`,
-            height: `${height}px`,
-            background: `url(${src}) no-repeat top left/100% 100%`
-          }}
-          ref={targetRef}
-        />
-        {activated && (
-          <Moveable
-            ables={[CornerRotatable, Editable]}
-            className={`${generatedClassName}__Moveable`}
-            draggable
-            keepRatio={keepRatio}
-            onDrag={onDrag}
-            onDragStart={onDragStart}
-            onRotate={onRotate}
-            onRotateStart={onRotateStart}
-            onScale={onScale}
-            onScaleStart={onScaleStart}
-            origin={false}
-            props={ableProps}
-            rotatable
-            scalable
-            target={targetRef}
-          />
-        )}
-      </div>
-    )
-  )`
-    position: relative;
+      )}
+    </div>
+  )
+)`
+  position: relative;
 
-    &:last-child {
-      z-index: 3001;
+  &:last-child {
+    z-index: 3001;
+  }
+
+  &__hidden-image {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: -1 !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+  }
+
+  &__visible-image {
+    position: absolute;
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &__Moveable {
+    opacity: 0;
+    transition: opacity 0.1s;
+
+    & > .moveable-rotation {
+      display: none !important;
     }
 
-    &__hidden-image {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      z-index: -1 !important;
-      width: 0 !important;
-      height: 0 !important;
-      opacity: 0 !important;
+    & > .moveable-control {
+      width: 12px !important;
+      height: 12px !important;
+      margin-top: -6px !important;
+      margin-left: -6px !important;
     }
+  }
 
-    &__visible-image {
-      position: absolute;
-      cursor: grab;
+  &:hover &__Moveable {
+    opacity: 1;
+  }
+`
 
-      &:active {
-        cursor: grabbing;
-      }
-    }
-
-    &__Moveable {
-      opacity: 0;
-      transition: opacity 0.1s;
-
-      & > .moveable-rotation {
-        display: none !important;
-      }
-
-      & > .moveable-control {
-        width: 12px !important;
-        height: 12px !important;
-        margin-top: -6px !important;
-        margin-left: -6px !important;
-      }
-    }
-
-    &:hover &__Moveable {
-      opacity: 1;
-    }
-  `
-)
+const MemoizedPresentationalSticker = memo(PresentationalSticker)
 
 type Sticker = FC<{
   stickerObject: StickerObject
@@ -170,7 +170,7 @@ export const Sticker: Sticker = ({ stickerObject }) => {
   } = useSticker({ stickerObject })
 
   return (
-    <PresentationalSticker
+    <MemoizedPresentationalSticker
       ableProps={ableProps}
       activated={activated}
       height={height}

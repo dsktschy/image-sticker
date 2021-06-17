@@ -4,6 +4,8 @@ import { DropzoneInputProps, DropzoneRootProps } from 'react-dropzone'
 import { StickerList } from '~/components/StickerList'
 import { useContentScript } from '~/hooks/ContentScript'
 
+const MemoizedStickerList = memo(StickerList)
+
 type PresentationalContentScript = FC<{
   className?: string
   generatedClassName?: string
@@ -11,21 +13,21 @@ type PresentationalContentScript = FC<{
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
 }>
 
-const PresentationalContentScript = memo(
-  styled<PresentationalContentScript>(
-    ({ className = '', getInputProps, getRootProps }) => (
-      <div {...getRootProps({ className })}>
-        <input {...getInputProps({ id: 'imgstckr-ContentScript__input' })} />
-        <StickerList />
-      </div>
-    )
-  )`
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 2147483647;
-  `
-)
+const PresentationalContentScript = styled<PresentationalContentScript>(
+  ({ className = '', getInputProps, getRootProps }) => (
+    <div {...getRootProps({ className })}>
+      <input {...getInputProps({ id: 'imgstckr-ContentScript__input' })} />
+      <MemoizedStickerList />
+    </div>
+  )
+)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+`
+
+const MemoizedPresentationalContentScript = memo(PresentationalContentScript)
 
 type ContentScript = FC
 
@@ -33,7 +35,7 @@ export const ContentScript: ContentScript = () => {
   const { getInputProps, getRootProps } = useContentScript()
 
   return (
-    <PresentationalContentScript
+    <MemoizedPresentationalContentScript
       getInputProps={getInputProps}
       getRootProps={getRootProps}
     />

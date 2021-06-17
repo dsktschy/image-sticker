@@ -31,6 +31,18 @@ module.exports = (env, { mode }) => ({
     filename: '[name].js'
   },
 
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  },
+
   module: {
     rules: [
       {
@@ -79,7 +91,7 @@ module.exports = (env, { mode }) => ({
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      chunks: ['default_popup'],
+      chunks: ['vendors', 'default_popup'],
       filename: 'default_popup.html',
       title: 'Image Sticker'
     }),

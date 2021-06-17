@@ -78,7 +78,8 @@ const PresentationalSticker = styled<PresentationalSticker>(
       {activated && (
         <Moveable
           ables={[CornerRotatable, Editable]}
-          className={`${generatedClassName}__Moveable`}
+          // ESLint warns if no type-assertion
+          className={`${generatedClassName}__Moveable` as string} // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
           draggable
           keepRatio={keepRatio}
           onDrag={onDrag}

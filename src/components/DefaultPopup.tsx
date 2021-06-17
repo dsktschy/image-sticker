@@ -14,7 +14,7 @@ type PresentationalDefaultPopup = FC<{
   ready: boolean
 }>
 
-export const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
+const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
   ({
     className = '',
     disabled,

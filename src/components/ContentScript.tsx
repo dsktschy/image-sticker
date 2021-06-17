@@ -11,7 +11,7 @@ type PresentationalContentScript = FC<{
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
 }>
 
-export const PresentationalContentScript = memo(
+const PresentationalContentScript = memo(
   styled<PresentationalContentScript>(
     ({ className = '', getInputProps, getRootProps }) => (
       <div {...getRootProps({ className })}>

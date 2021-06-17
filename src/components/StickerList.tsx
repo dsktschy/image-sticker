@@ -10,7 +10,7 @@ type PresentationalStickerList = FC<{
   stickerObjectList: StickerObject[]
 }>
 
-export const PresentationalStickerList = styled<PresentationalStickerList>(
+const PresentationalStickerList = styled<PresentationalStickerList>(
   ({ className = '', stickerObjectList }) => (
     <div className={className} id="imgstckr-StickerList">
       {stickerObjectList.map(stickerObject => (

@@ -35,7 +35,7 @@ type PresentationalSticker = FC<{
   width: number
 }>
 
-export const PresentationalSticker = memo(
+const PresentationalSticker = memo(
   styled<PresentationalSticker>(
     ({
       ableProps,

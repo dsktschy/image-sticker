@@ -29,7 +29,6 @@ const executeContentScript: ExecuteContentScript = async tabId => {
       code: '!!document.getElementById("imgstckr")'
     })) as [boolean]
     if (contentScriptExecuted) return true
-    await browser.tabs.executeScript(tabId, { file: '/vendors.js' })
     await browser.tabs.executeScript(tabId, { file: '/content_script.js' })
     return true
   } catch (error) {

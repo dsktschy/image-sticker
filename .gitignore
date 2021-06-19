@@ -108,3 +108,6 @@ dist
 
 # Artifact file
 image-sticker.zip
+
+# rollup-plugin-visualizer
+stats/

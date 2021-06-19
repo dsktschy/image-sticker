@@ -106,8 +106,5 @@ dist
 # Visual Studio Code
 .vscode/
 
-# Webpack Bundle Analyzer
-bundle-stats.json
-
 # Artifact file
 image-sticker.zip

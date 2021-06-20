@@ -2,16 +2,6 @@ import path from 'path'
 import { Browser, launch, Page } from 'puppeteer'
 
 describe('E2E tests to see whether images are displayed correctly', () => {
-  // Expected behaviour of content script can't be gotten
-  // without content_script settings in manifest.json
-  // because of following reasons
-  // - executeScript of extension fails on puppeteer
-  // - chrome(browser).runtime is undefined
-  //   in content script injected by addScriptTag of puppeteer
-  // So create artifact for test in dist/test
-  //
-  // It can't be tested that default popup sends message to background
-  // because executeScript of extension doesn't response
   const distPath = path.resolve(__dirname, '../../dist/test')
   const image1Path = path.resolve(__dirname, '../../public/images/icon16.png')
   const image2Path = path.resolve(__dirname, '../../public/images/icon128.png')
@@ -53,6 +43,9 @@ describe('E2E tests to see whether images are displayed correctly', () => {
     // Test default popup as page
     // because it can't be opened by clicking icon in puppeteer
     // https://pptr.dev/#?product=Puppeteer&version=v9.1.1&show=api-working-with-chrome-extensions
+    //
+    // But it can't be tested that default popup sends message to background
+    // because executeScript method doesn't response
     const defaultPopupTarget = targets.find(target => target.type() === 'page')
     if (!defaultPopupTarget) return
     defaultPopupPage = await defaultPopupTarget.page()

@@ -1,13 +1,13 @@
-import rollupPluginAlias from '@rollup/plugin-alias'
-import rollupPluginCommonjs from '@rollup/plugin-commonjs'
-import { nodeResolve as rollupPluginNodeResolve } from '@rollup/plugin-node-resolve'
-import rollupPluginReplace from '@rollup/plugin-replace'
-import rollupPluginCopy from 'rollup-plugin-copy'
-import rollupPluginDelete from 'rollup-plugin-delete'
-import rollupPluginPostcss from 'rollup-plugin-postcss'
-import { terser as rollupPluginTerser } from 'rollup-plugin-terser'
-import rollupPluginTypescript2 from 'rollup-plugin-typescript2'
-import { visualizer as rollupPluginVisualizer } from 'rollup-plugin-visualizer'
+import alias from '@rollup/plugin-alias'
+import commonjs from '@rollup/plugin-commonjs'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import replace from '@rollup/plugin-replace'
+import copy from 'rollup-plugin-copy'
+import del from 'rollup-plugin-delete'
+import postcss from 'rollup-plugin-postcss'
+import { terser } from 'rollup-plugin-terser'
+import typescript from 'rollup-plugin-typescript2'
+import { visualizer } from 'rollup-plugin-visualizer'
 import createStyledComponentsTransformer from 'typescript-plugin-styled-components'
 
 const styledComponentsTransformer = createStyledComponentsTransformer({
@@ -16,63 +16,84 @@ const styledComponentsTransformer = createStyledComponentsTransformer({
 
 const development = process.env.NODE_ENV === 'development'
 
-/**
- * Output Directory Path
- *
- * Expected behaviour of content script can't be gotten
- * without content_script settings in manifest.json
- * because of following reasons
- * - executeScript of extension fails on puppeteer
- * - chrome(browser).runtime is undefined
- *   in content script injected by addScriptTag of puppeteer
- * So create artifact for test in dist/test
- */
+// In test, expected behavior of content script can't be gotten
+// without content_script settings in manifest.json
+// because of following reasons
+// - executeScript of extension fails on puppeteer
+// - chrome(browser).runtime is undefined
+//   in content script injected by addScriptTag of puppeteer
+// So create artifact for test in dist/test
 const outputDirPath = process.env.IMGSTCKR_TEST
   ? 'dist/test'
   : 'dist/production'
 
+const baseOutput = {
+  dir: outputDirPath,
+  format: 'iife',
+  sourcemap: development ? 'hidden' : false
+}
+
+const basePlugins = [
+  alias({
+    entries: {
+      '~': 'src'
+    }
+  }),
+  commonjs(),
+  nodeResolve({
+    browser: true
+  }),
+  replace({
+    preventAssignment: true,
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }),
+  typescript({
+    inlineSourceMap: development,
+    transformers: [
+      () => ({
+        before: [styledComponentsTransformer]
+      })
+    ]
+  }),
+  terser({
+    format: {
+      comments: false
+    }
+  }),
+  postcss({
+    minimize: true
+  })
+]
+
+// Single options object including input prop that is array
+// is not available, because it causes error by code splitting
+// Code splitting doesn't support iife format
 export default [
   /**
-   * Vendor
+   * vendor.js
    *
-   * For parallel requests and long term caching
-   * provide common packages to other entry points as global variables
+   * Provide common packages as global variables
+   * from vendor.js to other entry points
+   * for parallel requests and long term caching
    * because code splitting doesn't support iife format
    * https://github.com/rollup/rollup/issues/2072
    */
   {
     input: 'src/vendor.ts',
     output: {
-      file: `${outputDirPath}/vendor.js`,
-      format: 'iife',
-      sourcemap: development ? 'hidden' : false,
-      // Store exported value to window.imgstckr
+      ...baseOutput,
+      // Export common packages to window.imgstckr
       name: 'imgstckr'
     },
     plugins: [
-      rollupPluginCommonjs(),
-      rollupPluginNodeResolve({
-        browser: true
-      }),
-      rollupPluginReplace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      }),
-      rollupPluginDelete({
+      ...basePlugins,
+      del({
         targets: [
           `${outputDirPath}/vendor.js`,
           `${outputDirPath}/vendor.js.map`
         ]
       }),
-      rollupPluginTypescript2({
-        inlineSourceMap: development
-      }),
-      rollupPluginTerser({
-        format: {
-          comments: false
-        }
-      }),
-      rollupPluginVisualizer({
+      visualizer({
         gzipSize: true,
         filename: 'stats/vendor.html'
       })
@@ -80,36 +101,21 @@ export default [
   },
 
   /**
-   * Background
+   * background.js
    *
    * Settings for public files are also written here
    */
   {
     input: 'src/background.ts',
     output: {
-      file: `${outputDirPath}/background.js`,
-      format: 'iife',
-      sourcemap: development ? 'hidden' : false
+      ...baseOutput
     },
     plugins: [
-      rollupPluginAlias({
-        entries: {
-          '~': 'src'
-        }
-      }),
-      rollupPluginCommonjs(),
-      rollupPluginNodeResolve({
-        browser: true
-      }),
-      rollupPluginReplace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      }),
-      rollupPluginDelete({
+      ...basePlugins,
+      del({
         targets: [
           `${outputDirPath}/background.js`,
           `${outputDirPath}/background.js.map`,
-
           // Settings for public files
           `${outputDirPath}/_locales`,
           `${outputDirPath}/images`,
@@ -117,21 +123,12 @@ export default [
           `${outputDirPath}/default_popup.html`
         ]
       }),
-      rollupPluginTypescript2({
-        inlineSourceMap: development
-      }),
-      rollupPluginTerser({
-        format: {
-          comments: false
-        }
-      }),
-      rollupPluginVisualizer({
+      visualizer({
         gzipSize: true,
         filename: 'stats/background.html'
       }),
-
       // Settings for public files
-      rollupPluginCopy({
+      copy({
         targets: [
           {
             src: 'public/_locales',
@@ -145,7 +142,6 @@ export default [
             src: 'public/default_popup.html',
             dest: outputDirPath
           },
-          // Switch how to inject content_script.js
           {
             src: process.env.IMGSTCKR_TEST
               ? 'public/manifests/test.json'
@@ -159,17 +155,15 @@ export default [
   },
 
   /**
-   * Default Popup
+   * default_popup.js
    *
    * Import common packages from vendor as global variables because of iife format
    */
   {
     input: 'src/default_popup.tsx',
     output: {
-      file: `${outputDirPath}/default_popup.js`,
-      format: 'iife',
-      sourcemap: development ? 'hidden' : false,
-      // Import common packages from window.imgstckr.*
+      ...baseOutput,
+      // Import common packages from window.imgstckr
       globals: {
         react: 'imgstckr.React',
         'react-dom': 'imgstckr.ReactDOM'
@@ -178,42 +172,14 @@ export default [
     // Don't include common packages in bundle
     external: ['react', 'react-dom'],
     plugins: [
-      rollupPluginAlias({
-        entries: {
-          '~': 'src'
-        }
-      }),
-      rollupPluginCommonjs(),
-      rollupPluginNodeResolve({
-        browser: true
-      }),
-      rollupPluginReplace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      }),
-      rollupPluginDelete({
+      ...basePlugins,
+      del({
         targets: [
           `${outputDirPath}/default_popup.js`,
           `${outputDirPath}/default_popup.js.map`
         ]
       }),
-      rollupPluginTypescript2({
-        inlineSourceMap: development,
-        transformers: [
-          () => ({
-            before: [styledComponentsTransformer]
-          })
-        ]
-      }),
-      rollupPluginTerser({
-        format: {
-          comments: false
-        }
-      }),
-      rollupPluginPostcss({
-        minimize: true
-      }),
-      rollupPluginVisualizer({
+      visualizer({
         gzipSize: true,
         filename: 'stats/default_popup.html'
       })
@@ -221,17 +187,15 @@ export default [
   },
 
   /**
-   * Content Script
+   * content_script.js
    *
    * Import common packages from vendor as global variables because of iife format
    */
   {
     input: 'src/content_script.tsx',
     output: {
-      file: `${outputDirPath}/content_script.js`,
-      format: 'iife',
-      sourcemap: development ? 'hidden' : false,
-      // Import common packages from window.imgstckr.*
+      ...baseOutput,
+      // Import common packages from window.imgstckr
       globals: {
         react: 'imgstckr.React',
         'react-dom': 'imgstckr.ReactDOM'
@@ -240,39 +204,14 @@ export default [
     // Don't include common packages in bundle
     external: ['react', 'react-dom'],
     plugins: [
-      rollupPluginAlias({
-        entries: {
-          '~': 'src'
-        }
-      }),
-      rollupPluginCommonjs(),
-      rollupPluginNodeResolve({
-        browser: true
-      }),
-      rollupPluginReplace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      }),
-      rollupPluginDelete({
+      ...basePlugins,
+      del({
         targets: [
           `${outputDirPath}/content_script.js`,
           `${outputDirPath}/content_script.js.map`
         ]
       }),
-      rollupPluginTypescript2({
-        inlineSourceMap: development,
-        transformers: [
-          () => ({
-            before: [styledComponentsTransformer]
-          })
-        ]
-      }),
-      rollupPluginTerser({
-        format: {
-          comments: false
-        }
-      }),
-      rollupPluginVisualizer({
+      visualizer({
         gzipSize: true,
         filename: 'stats/content_script.html'
       })

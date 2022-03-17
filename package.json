@@ -1,6 +1,6 @@
 {
   "name": "image-sticker",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "An extension to paste images like stickers on a web page. Supports moving, scaling, and rotating. Duplication and deletion are also easy. No uploading occurs even if you are online.",
   "scripts": {
     "dev": "rollup --config --environment NODE_ENV:development --watch",

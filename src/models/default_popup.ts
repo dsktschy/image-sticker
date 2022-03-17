@@ -1,7 +1,7 @@
-import { browser } from 'webextension-polyfill-ts'
+import { browser, Tabs } from 'webextension-polyfill-ts'
 import { createPopupClickedMessageObject } from '~/lib/PopupClickedMessageObject'
-import { createPopupOpenedMessageObject } from '~/lib/PopupOpenedMessageObject'
-import { sendMessageToBackground } from '~/models/message_sender'
+import { getActiveTab } from '~/models/tab_getter'
+import { sendMessageToTab } from '~/models/message_sender'
 
 type Languages = {
   [key: string]: string
@@ -24,11 +24,31 @@ type SendPopupClickedMessageToBackground = (
 
 export const sendPopupClickedMessageToBackground: SendPopupClickedMessageToBackground = handleRecieveResponse => {
   const popupClickedMessageObject = createPopupClickedMessageObject()
-  sendMessageToBackground(popupClickedMessageObject)
+  Promise.resolve()
+    .then(getActiveTab)
+    .then(tab => sendMessageToTab(popupClickedMessageObject, tab))
     .then(handleRecieveResponse)
     .catch(() => {
-      // Error is thrown on background
+      handleRecieveResponse(false)
     })
+}
+
+type ExecuteContentScript = (tab: Tabs.Tab) => Promise<boolean>
+
+const executeContentScript: ExecuteContentScript = async tab => {
+  try {
+    const tabId = tab.id
+    if (typeof tabId === 'undefined') throw new Error('NoTabIdError')
+    const [contentScriptExecuted] = (await browser.tabs.executeScript(tabId, {
+      code: '!!document.getElementById("imgstckr")'
+    })) as [boolean]
+    if (contentScriptExecuted) return true
+    await browser.tabs.executeScript(tabId, { file: '/vendor.js' })
+    await browser.tabs.executeScript(tabId, { file: '/content_script.js' })
+    return true
+  } catch (error) {
+    return false
+  }
 }
 
 type InitializeDefaultPopup = (
@@ -36,8 +56,9 @@ type InitializeDefaultPopup = (
 ) => () => void
 
 export const initializeDefaultPopup: InitializeDefaultPopup = handleRecieveResponse => {
-  const popupOpenedMessageObject = createPopupOpenedMessageObject()
-  sendMessageToBackground(popupOpenedMessageObject)
+  Promise.resolve()
+    .then(getActiveTab)
+    .then(executeContentScript)
     .then(handleRecieveResponse)
     .catch(() => {
       handleRecieveResponse(false)

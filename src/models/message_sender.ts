@@ -1,17 +1,18 @@
-import { browser } from 'webextension-polyfill-ts'
+import { browser, Tabs } from 'webextension-polyfill-ts'
 import { MessageObject } from '~/lib/MessageObject'
 
 type SendMessageToTab = (
   messageObject: MessageObject,
-  tabId: number
+  tab: Tabs.Tab
 ) => Promise<boolean>
 
 export const sendMessageToTab: SendMessageToTab = async (
   messageObject,
-  tabId
+  tab
 ) => {
+  if (typeof tab.id === 'undefined') throw new Error('NoTabIdError')
   const responsePromise = (await browser.tabs.sendMessage(
-    tabId,
+    tab.id,
     messageObject
   )) as Promise<boolean>
   const response = await responsePromise

@@ -67,7 +67,6 @@ const createHandleMessage: CreateHandleMessage = (
           return handlePopupClickedMessage(messageObject)
         case 'droppedOnPopup':
           return handleDroppedOnPopupMessage(messageObject)
-        case 'popupOpened':
         default:
           throw new Error('InvalidMessageTypeError')
       }

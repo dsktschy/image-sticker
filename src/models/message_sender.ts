@@ -1,9 +1,15 @@
-import { browser, Tabs } from 'webextension-polyfill-ts'
 import { MessageObject } from '~/lib/MessageObject'
+
+type TabsSendMessage = <M, R>(tabId: number, messageObject: M) => Promise<R>
+
+const tabsSendMessage: TabsSendMessage = (tabId, messageObject) =>
+  new Promise(resolve => {
+    chrome.tabs.sendMessage(tabId, messageObject, resolve)
+  })
 
 type SendMessageToTab = (
   messageObject: MessageObject,
-  tab: Tabs.Tab
+  tab: chrome.tabs.Tab
 ) => Promise<boolean>
 
 export const sendMessageToTab: SendMessageToTab = async (
@@ -11,22 +17,27 @@ export const sendMessageToTab: SendMessageToTab = async (
   tab
 ) => {
   if (typeof tab.id === 'undefined') throw new Error('NoTabIdError')
-  const responsePromise = (await browser.tabs.sendMessage(
+  const response = await tabsSendMessage<MessageObject, boolean>(
     tab.id,
     messageObject
-  )) as Promise<boolean>
-  const response = await responsePromise
+  )
   return response
 }
+
+type RuntimeSendMessage = <M, R>(messageObject: M) => Promise<R>
+
+const runtimeSendMessage: RuntimeSendMessage = messageObject =>
+  new Promise(resolve => {
+    chrome.runtime.sendMessage(messageObject, resolve)
+  })
 
 type SendMessageToBackground = (
   messageObject: MessageObject
 ) => Promise<boolean>
 
 export const sendMessageToBackground: SendMessageToBackground = async messageObject => {
-  const responsePromise = (await browser.runtime.sendMessage(
+  const response = await runtimeSendMessage<MessageObject, boolean>(
     messageObject
-  )) as Promise<boolean>
-  const response = await responsePromise
+  )
   return response
 }

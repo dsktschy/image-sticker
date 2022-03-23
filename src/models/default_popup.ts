@@ -1,4 +1,3 @@
-import { browser, Tabs } from 'webextension-polyfill-ts'
 import { createPopupClickedMessageObject } from '~/lib/PopupClickedMessageObject'
 import { getActiveTab } from '~/models/tab_getter'
 import { sendMessageToTab } from '~/models/message_sender'
@@ -8,10 +7,10 @@ type Languages = {
 }
 
 export const languages: Languages = {
-  textOnAvailablePage: browser.i18n.getMessage(
+  textOnAvailablePage: chrome.i18n.getMessage(
     'defaultPopupTextOnAvailablePage'
   ),
-  textOnNotAvailablePage: browser.i18n.getMessage(
+  textOnNotAvailablePage: chrome.i18n.getMessage(
     'defaultPopupTextOnNotAvailablePage'
   )
 }
@@ -23,28 +22,32 @@ type SendPopupClickedMessageToBackground = (
 ) => void
 
 export const sendPopupClickedMessageToBackground: SendPopupClickedMessageToBackground = handleRecieveResponse => {
-  const popupClickedMessageObject = createPopupClickedMessageObject()
   Promise.resolve()
     .then(getActiveTab)
-    .then(tab => sendMessageToTab(popupClickedMessageObject, tab))
+    .then(activeTab =>
+      sendMessageToTab(createPopupClickedMessageObject(), activeTab)
+    )
     .then(handleRecieveResponse)
     .catch(() => {
       handleRecieveResponse(false)
     })
 }
 
-type ExecuteContentScript = (tab: Tabs.Tab) => Promise<boolean>
+type ExecuteContentScript = (tab: chrome.tabs.Tab) => Promise<boolean>
 
 const executeContentScript: ExecuteContentScript = async tab => {
   try {
     const tabId = tab.id
     if (typeof tabId === 'undefined') throw new Error('NoTabIdError')
-    const [contentScriptExecuted] = (await browser.tabs.executeScript(tabId, {
-      code: '!!document.getElementById("imgstckr")'
-    })) as [boolean]
-    if (contentScriptExecuted) return true
-    await browser.tabs.executeScript(tabId, { file: '/vendor.js' })
-    await browser.tabs.executeScript(tabId, { file: '/content_script.js' })
+    const [injectionResult] = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => !!document.getElementById('imgstckr')
+    })
+    if (injectionResult.result) return true
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ['/vendor.js', '/content_script.js']
+    })
     return true
   } catch (error) {
     return false

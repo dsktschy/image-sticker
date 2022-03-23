@@ -1,4 +1,3 @@
-import { browser } from 'webextension-polyfill-ts'
 import { DroppedOnPopupMessageObject } from '~/lib/DroppedOnPopupMessageObject'
 import { MessageObject } from '~/lib/MessageObject'
 import { PopupClickedMessageObject } from '~/lib/PopupClickedMessageObject'
@@ -49,7 +48,11 @@ const createHandleDroppedOnPopupMessage: CreateHandleDroppedOnPopupMessage = han
   return Promise.resolve(true)
 }
 
-type HandleMessage = (messageObject: MessageObject) => Promise<boolean>
+type HandleMessage = (
+  message: MessageObject,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response: boolean) => void
+) => boolean
 
 type CreateHandleMessage = (
   handlePopupClickedMessage: HandlePopupClickedMessage,
@@ -59,21 +62,30 @@ type CreateHandleMessage = (
 const createHandleMessage: CreateHandleMessage = (
   handlePopupClickedMessage,
   handleDroppedOnPopupMessage
-) => messageObject =>
-  Promise.resolve()
-    .then(() => {
-      switch (messageObject.type) {
-        case 'popupClicked':
-          return handlePopupClickedMessage(messageObject)
-        case 'droppedOnPopup':
-          return handleDroppedOnPopupMessage(messageObject)
-        default:
-          throw new Error('InvalidMessageTypeError')
-      }
-    })
-    .catch(error => {
-      throw error
-    })
+) => (messageObject, sender, sendResponse) => {
+  switch (messageObject.type) {
+    case 'popupClicked':
+      Promise.resolve()
+        .then(() => handlePopupClickedMessage(messageObject))
+        .then(sendResponse)
+        .catch(error => {
+          throw error
+        })
+      break
+    case 'droppedOnPopup':
+      Promise.resolve()
+        .then(() => handleDroppedOnPopupMessage(messageObject))
+        .then(sendResponse)
+        .catch(error => {
+          throw error
+        })
+      break
+    default:
+      throw new Error('InvalidMessageTypeError')
+  }
+  // https://stackoverflow.com/a/71520230/18535330
+  return true
+}
 
 type InitializeContentScript = (
   openFileDialog: () => void,
@@ -93,7 +105,7 @@ export const initializeContentScript: InitializeContentScript = (
     ),
     createHandleDroppedOnPopupMessage(handleDroppedOnPopupMessageCallback)
   )
-  const runtimeOnMessage = browser.runtime.onMessage
+  const runtimeOnMessage = chrome.runtime.onMessage
   runtimeOnMessage.addListener(handleMessage)
   return () => {
     runtimeOnMessage.removeListener(handleMessage)

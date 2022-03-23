@@ -11,11 +11,10 @@ describe('E2E tests to see whether images are displayed correctly', () => {
   const nonImagePathList = [nonImage1Path, nonImage2Path]
 
   let browser: Browser | null = null
-  let backgroundPage: Page | null = null
   let defaultPopupPage: Page | null = null
   let contentPage: Page | null = null
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     // https://pptr.dev/#?product=Puppeteer&version=v9.1.1&show=api-working-with-chrome-extensions
     browser = await launch({
       args: [
@@ -24,43 +23,48 @@ describe('E2E tests to see whether images are displayed correctly', () => {
       ],
       headless: false
     })
+    // Wait creating background service worker
+    await new Promise(resolve => setTimeout(resolve, 100))
     const targets = browser.targets()
 
-    // Get background page to know entension ID from chrome object
+    // Get background service worker to know entension ID from chrome object
+    // https://tweak-extension.com/blog/complete-guide-test-chrome-extension-puppeteer/#launch-puppeteer
     const backgroundTarget = targets.find(
-      target => target.type() === 'background_page'
+      target => target.type() === 'service_worker'
     )
-    if (!backgroundTarget) return
-    backgroundPage = await backgroundTarget.page()
-    if (!backgroundPage) return
-    const extensionId = await backgroundPage.evaluate<() => string>(
-      /* eslint-disable */
-      // @ts-ignore
-      () => chrome.i18n.getMessage('@@extension_id')
-      /* eslint-enable */
-    )
+    if (!backgroundTarget) throw new Error('NoBackgroundTarget')
+    const partialExtensionUrl = backgroundTarget.url() || ''
+    const [, , extensionId] = partialExtensionUrl.split('/')
 
     // Test default popup as page
     // because it can't be opened by clicking icon in puppeteer
     // https://pptr.dev/#?product=Puppeteer&version=v9.1.1&show=api-working-with-chrome-extensions
-    //
-    // But it can't be tested that default popup sends message to background
-    // because executeScript method doesn't response
+    // But script execution can't be tested because it doesn't response
     const defaultPopupTarget = targets.find(target => target.type() === 'page')
-    if (!defaultPopupTarget) return
+    if (!defaultPopupTarget) throw new Error('NoDefaultPopupTarget')
     defaultPopupPage = await defaultPopupTarget.page()
-    if (!defaultPopupPage) return
+    if (!defaultPopupPage) throw new Error('NoDefaultPopupPage')
     await defaultPopupPage.goto(
-      `chrome-extension://${extensionId}/default_popup.html`
+      `chrome-extension://${extensionId}/default_popup.html`,
+      { waitUntil: 'load' }
     )
+  })
 
+  beforeEach(async () => {
+    if (!browser) throw new Error('NoBrowser')
     contentPage = await browser.newPage()
-    await contentPage.goto('https://google.com')
+    if (!contentPage) throw new Error('NoContentPage')
+    await contentPage.goto('https://google.com', { waitUntil: 'load' })
     await contentPage.bringToFront()
   })
 
   afterEach(async () => {
-    if (!browser) return
+    if (!contentPage) throw new Error('NoContentPage')
+    await contentPage.close()
+  })
+
+  afterAll(async () => {
+    if (!browser) throw new Error('NoBrowser')
     await browser.close()
   })
 

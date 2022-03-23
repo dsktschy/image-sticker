@@ -2,9 +2,9 @@
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
   "version": "3.0.1",
-  "manifest_version": 2,
-  "permissions": ["activeTab"],
-  "browser_action": {
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting"],
+  "action": {
     "default_popup": "default_popup.html",
     "default_icon": {
       "16": "images/icon16.png",
@@ -16,7 +16,7 @@
     }
   },
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "icons": {
     "16": "images/icon16.png",

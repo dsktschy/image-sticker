@@ -1,33 +1,45 @@
 import { createDroppedOnPopupMessageObject } from '~/lib/DroppedOnPopupMessageObject'
 import { sendMessageToBackground } from '~/models/message_sender'
 
+export type HandleLoadCallback = (error: Error | null) => void
+
 type CreateHandleLoad = (
-  handleLoadCallback: () => void
+  handleLoadCallback: HandleLoadCallback
 ) => (event: ProgressEvent<FileReader>) => void
 
 const createHandleLoad: CreateHandleLoad = handleLoadCallback => ({
   target
 }) => {
-  if (!target) throw new Error('FileLoadingError')
+  if (!target) {
+    handleLoadCallback(new Error('FileLoadingError'))
+    return
+  }
   const { result } = target
-  if (typeof result !== 'string') throw new Error('FileDataURLError')
+  if (typeof result !== 'string') {
+    handleLoadCallback(new Error('FileDataURLError'))
+    return
+  }
   const droppedOnPopupMessageObject = createDroppedOnPopupMessageObject(result)
-  sendMessageToBackground(droppedOnPopupMessageObject)
+  Promise.resolve()
+    .then(() => sendMessageToBackground(droppedOnPopupMessageObject))
     .then(handleLoadCallback)
-    .catch(error => {
-      throw error
-    })
+    .catch(handleLoadCallback)
 }
 
-type ReadFileList = (fileList: File[]) => void
+type ReadFileList = (
+  handleLoadCallback: HandleLoadCallback,
+  fileList: File[]
+) => void
 
-export const readFileList: ReadFileList = fileList => {
-  if (typeof FileReader === 'undefined') throw new Error('NoFileReaderError')
+export const readFileList: ReadFileList = (handleLoadCallback, fileList) => {
+  if (typeof FileReader === 'undefined')
+    handleLoadCallback(new Error('NoFileReaderError'))
   for (const file of Array.from(fileList)) {
     // https://stackoverflow.com/questions/24843508/
     const fileReader = new FileReader()
-    const handleLoad = createHandleLoad(() => {
+    const handleLoad = createHandleLoad(error => {
       fileReader.removeEventListener('load', handleLoad)
+      handleLoadCallback(error)
     })
     fileReader.addEventListener('load', handleLoad)
     fileReader.readAsDataURL(file)

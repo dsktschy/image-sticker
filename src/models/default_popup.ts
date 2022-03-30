@@ -7,51 +7,44 @@ type Languages = {
 }
 
 export const languages: Languages = {
-  textOnAvailablePage: chrome.i18n.getMessage(
-    'defaultPopupTextOnAvailablePage'
-  ),
-  textOnNotAvailablePage: chrome.i18n.getMessage(
-    'defaultPopupTextOnNotAvailablePage'
+  textNoError: chrome.i18n.getMessage('defaultPopupTextNoError'),
+  textError: chrome.i18n.getMessage('defaultPopupTextError'),
+  textNotAvailablePageError: chrome.i18n.getMessage(
+    'defaultPopupTextNotAvailablePageError'
   )
 }
 
-export type HandleRecieveResponse = (result: boolean) => void
+type HandleRecieveResponse = (error: Error | null) => void
 
-type SendPopupClickedMessageToBackground = (
+type SendPopupClickedMessageToContentScript = (
   handleRecieveResponse: HandleRecieveResponse
 ) => void
 
-export const sendPopupClickedMessageToBackground: SendPopupClickedMessageToBackground = handleRecieveResponse => {
+export const sendPopupClickedMessageToContentScript: SendPopupClickedMessageToContentScript = handleRecieveResponse => {
   Promise.resolve()
     .then(getActiveTab)
     .then(activeTab =>
       sendMessageToTab(createPopupClickedMessageObject(), activeTab)
     )
     .then(handleRecieveResponse)
-    .catch(() => {
-      handleRecieveResponse(false)
-    })
+    .catch(handleRecieveResponse)
 }
 
-type ExecuteContentScript = (tab: chrome.tabs.Tab) => Promise<boolean>
+type ExecuteContentScript = (tab: chrome.tabs.Tab) => Promise<Error | null>
 
 const executeContentScript: ExecuteContentScript = async tab => {
-  try {
-    const tabId = tab.id
-    if (typeof tabId === 'undefined') throw new Error('NoTabIdError')
-    const [injectionResult] = await chrome.scripting.executeScript({
-      target: { tabId },
-      func: () => !!document.getElementById('imgstckr')
-    })
-    if (injectionResult.result) return true
-    await chrome.scripting.executeScript({
-      target: { tabId },
-      files: ['/vendor.js', '/content_script.js']
-    })
-    return true
-  } catch (error) {
-    return false
-  }
+  const tabId = tab.id
+  if (typeof tabId === 'undefined') return new Error('NoTabIdError')
+  const [{ result }] = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => !!document.getElementById('imgstckr')
+  })
+  if (result) return null
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['/vendor.js', '/content_script.js']
+  })
+  return null
 }
 
 type InitializeDefaultPopup = (
@@ -63,9 +56,7 @@ export const initializeDefaultPopup: InitializeDefaultPopup = handleRecieveRespo
     .then(getActiveTab)
     .then(executeContentScript)
     .then(handleRecieveResponse)
-    .catch(() => {
-      handleRecieveResponse(false)
-    })
+    .catch(handleRecieveResponse)
   return () => {
     // No events to destroy
   }

@@ -9,9 +9,9 @@ type PresentationalDefaultPopup = FC<{
   generatedClassName?: string
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
-  languages: { [key: string]: string }
   onClick: () => void
   ready: boolean
+  text: string
 }>
 
 const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
@@ -21,9 +21,9 @@ const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
     generatedClassName = className.split(' ')[1],
     getInputProps,
     getRootProps,
-    languages,
     onClick,
-    ready
+    ready,
+    text
   }) => (
     <div {...getRootProps({ className })}>
       <svg
@@ -41,15 +41,12 @@ const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
           <input
             {...getInputProps({ disabled, id: 'imgstckr-DefaultPopup__input' })}
           />
-          {disabled ? (
-            <p className={`${generatedClassName}__text`}>
-              {languages.textOnNotAvailablePage}
-            </p>
-          ) : (
-            <p className={`${generatedClassName}__text`} onClick={onClick}>
-              {languages.textOnAvailablePage}
-            </p>
-          )}
+          <p
+            className={`${generatedClassName}__text`}
+            {...(disabled ? {} : { onClick })}
+          >
+            {text}
+          </p>
         </>
       )}
     </div>
@@ -85,12 +82,12 @@ type DefaultPopup = FC
 
 const DefaultPopup: DefaultPopup = () => {
   const {
-    onAvailablePage,
     getInputProps,
     getRootProps,
-    languages,
+    onAvailablePage,
+    openContentScriptFileDialog,
     ready,
-    openContentScriptFileDialog
+    text
   } = useDefaultPopup()
 
   return (
@@ -98,9 +95,9 @@ const DefaultPopup: DefaultPopup = () => {
       disabled={!onAvailablePage}
       getInputProps={getInputProps}
       getRootProps={getRootProps}
-      languages={languages}
       onClick={openContentScriptFileDialog}
       ready={ready}
+      text={text}
     />
   )
 }

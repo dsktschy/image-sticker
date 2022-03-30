@@ -10,18 +10,18 @@ const tabsSendMessage: TabsSendMessage = (tabId, messageObject) =>
 type SendMessageToTab = (
   messageObject: MessageObject,
   tab: chrome.tabs.Tab
-) => Promise<boolean>
+) => Promise<Error | null>
 
 export const sendMessageToTab: SendMessageToTab = async (
   messageObject,
   tab
 ) => {
-  if (typeof tab.id === 'undefined') throw new Error('NoTabIdError')
-  const response = await tabsSendMessage<MessageObject, boolean>(
+  if (typeof tab.id === 'undefined') return new Error('NoTabIdError')
+  const error = await tabsSendMessage<MessageObject, Error | null>(
     tab.id,
     messageObject
   )
-  return response
+  return error
 }
 
 type RuntimeSendMessage = <M, R>(messageObject: M) => Promise<R>
@@ -33,11 +33,11 @@ const runtimeSendMessage: RuntimeSendMessage = messageObject =>
 
 type SendMessageToBackground = (
   messageObject: MessageObject
-) => Promise<boolean>
+) => Promise<Error | null>
 
 export const sendMessageToBackground: SendMessageToBackground = async messageObject => {
-  const response = await runtimeSendMessage<MessageObject, boolean>(
+  const error = await runtimeSendMessage<MessageObject, Error | null>(
     messageObject
   )
-  return response
+  return error
 }

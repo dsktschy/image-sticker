@@ -7,12 +7,16 @@
     "message": "You can paste any image on a web page. Supports moving, scaling, rotating, duplication, and deletion. No upload will occur.",
     "description": "Description of the extension"
   },
-  "defaultPopupTextOnAvailablePage": {
+  "defaultPopupTextNoError": {
     "message": "Drop images here\nor\nClick to select images",
     "description": "Information text in default_popup when is opened on available page"
   },
-  "defaultPopupTextOnNotAvailablePage": {
+  "defaultPopupTextError": {
+    "message": "An error has occurred\nTry again",
+    "description": "Information text for general error in default_popup"
+  },
+  "defaultPopupTextNotAvailablePageError": {
     "message": "Not available on this page",
-    "description": "Information text in default_popup when is opened on　not available page"
+    "description": "Information text in default_popup when is opened on not available page"
   }
 }

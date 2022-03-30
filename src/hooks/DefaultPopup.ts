@@ -5,57 +5,57 @@ import {
   useDropzone
 } from 'react-dropzone'
 import {
-  HandleRecieveResponse,
   initializeDefaultPopup,
   languages,
-  sendPopupClickedMessageToBackground
+  sendPopupClickedMessageToContentScript
 } from '~/models/default_popup'
-import { readFileList } from '~/models/file_reader'
+import { HandleLoadCallback, readFileList } from '~/models/file_reader'
 
 type UseDefaultPopup = () => {
-  onAvailablePage: boolean
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
-  languages: typeof languages
-  ready: boolean
+  onAvailablePage: boolean
   openContentScriptFileDialog: () => void
+  ready: boolean
+  text: string
 }
 
 export const useDefaultPopup: UseDefaultPopup = () => {
-  const { getInputProps, getRootProps } = useDropzone({
-    accept: '.png,.jpg,.jpeg,.gif,.svg',
-    noClick: true,
-    noKeyboard: true,
-    onDrop: readFileList
-  })
-
   const [ready, setReady] = useState(false)
 
   const [onAvailablePage, setOnAvailablePage] = useState(false)
 
-  const noop = useCallback<HandleRecieveResponse>(() => {
-    // No operation
+  const [text, setText] = useState('')
+
+  const updateState = useCallback<HandleLoadCallback>(error => {
+    setReady(true)
+    setOnAvailablePage(!error)
+    let languageKey = 'text' + (error ? error.message : 'NoError')
+    if (!(languageKey in languages)) languageKey = 'textError'
+    setText(languages[languageKey])
   }, [])
+
+  const { getInputProps, getRootProps } = useDropzone({
+    accept: '.png,.jpg,.jpeg,.gif,.svg',
+    noClick: true,
+    noKeyboard: true,
+    onDrop: readFileList.bind(null, updateState)
+  })
 
   const openContentScriptFileDialog = useCallback(() => {
-    sendPopupClickedMessageToBackground(noop)
-  }, [noop])
-
-  const updateState = useCallback<HandleRecieveResponse>(result => {
-    setReady(true)
-    setOnAvailablePage(result)
-  }, [])
+    sendPopupClickedMessageToContentScript(updateState)
+  }, [updateState])
 
   useEffect(() => {
     return initializeDefaultPopup(updateState)
   }, [updateState])
 
   return {
-    onAvailablePage,
     getInputProps,
     getRootProps,
-    languages,
+    onAvailablePage,
+    openContentScriptFileDialog,
     ready,
-    openContentScriptFileDialog
+    text
   }
 }

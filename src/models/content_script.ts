@@ -8,11 +8,11 @@ type CloneStickerObject = (stickerObject: StickerObject) => StickerObject
 export const cloneStickerObject: CloneStickerObject = ({ src }) =>
   createStickerObject(src)
 
-export type HandlePopupClickedMessageCallback = () => void
+type HandlePopupClickedMessageCallback = () => void
 
 type HandlePopupClickedMessage = (
   popupClickedMessageObject: PopupClickedMessageObject
-) => Promise<boolean>
+) => Promise<Error | null>
 
 type CreateHandlePopupClickedMessage = (
   openFileDialog: () => void,
@@ -23,9 +23,14 @@ const createHandlePopupClickedMessage: CreateHandlePopupClickedMessage = (
   openFileDialog,
   handlePopupClickedMessageCallback
 ) => () => {
-  openFileDialog()
-  handlePopupClickedMessageCallback()
-  return Promise.resolve(true)
+  try {
+    openFileDialog()
+    handlePopupClickedMessageCallback()
+  } catch (error) {
+    if (error instanceof Error) return Promise.resolve(error)
+    return Promise.resolve(new Error('HandlePopupClickedMessageError'))
+  }
+  return Promise.resolve(null)
 }
 
 export type HandleDroppedOnPopupMessageCallback = (
@@ -34,7 +39,7 @@ export type HandleDroppedOnPopupMessageCallback = (
 
 type HandleDroppedOnPopupMessage = (
   droppedOnPopupMessageObject: DroppedOnPopupMessageObject
-) => Promise<boolean>
+) => Promise<Error | null>
 
 type CreateHandleDroppedOnPopupMessage = (
   handleDroppedOnPopupMessageCallback: HandleDroppedOnPopupMessageCallback
@@ -43,15 +48,37 @@ type CreateHandleDroppedOnPopupMessage = (
 const createHandleDroppedOnPopupMessage: CreateHandleDroppedOnPopupMessage = handleDroppedOnPopupMessageCallback => ({
   payload
 }) => {
-  const stickerObject = createStickerObject(payload)
-  handleDroppedOnPopupMessageCallback(stickerObject)
-  return Promise.resolve(true)
+  try {
+    const stickerObject = createStickerObject(payload)
+    handleDroppedOnPopupMessageCallback(stickerObject)
+  } catch (error) {
+    if (error instanceof Error) return Promise.resolve(error)
+    return Promise.resolve(new Error('HandleDroppedOnPopupMessageError'))
+  }
+  return Promise.resolve(null)
+}
+
+type CreateSendResponseToPopupClickedMessage = (
+  error: Error | null,
+  sendResponse: (error: Error | null) => void
+) => void
+
+const createSendResponseToPopupClickedMessage: CreateSendResponseToPopupClickedMessage = (
+  error,
+  sendResponse
+) => {
+  const runtimeOnMessage = chrome.runtime.onMessage
+  const handleMessage = () => {
+    runtimeOnMessage.removeListener(handleMessage)
+    sendResponse(error)
+  }
+  runtimeOnMessage.addListener(handleMessage)
 }
 
 type HandleMessage = (
   message: MessageObject,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (response: boolean) => void
+  sendResponse: (error: Error | null) => void
 ) => boolean
 
 type CreateHandleMessage = (
@@ -67,21 +94,21 @@ const createHandleMessage: CreateHandleMessage = (
     case 'popupClicked':
       Promise.resolve()
         .then(() => handlePopupClickedMessage(messageObject))
-        .then(sendResponse)
-        .catch(error => {
-          throw error
-        })
+        .then(error =>
+          createSendResponseToPopupClickedMessage(error, sendResponse)
+        )
+        .catch(error =>
+          createSendResponseToPopupClickedMessage(error, sendResponse)
+        )
       break
     case 'droppedOnPopup':
       Promise.resolve()
         .then(() => handleDroppedOnPopupMessage(messageObject))
         .then(sendResponse)
-        .catch(error => {
-          throw error
-        })
+        .catch(sendResponse)
       break
     default:
-      throw new Error('InvalidMessageTypeError')
+      sendResponse(new Error('InvalidMessageTypeError'))
   }
   // https://stackoverflow.com/a/71520230/18535330
   return true

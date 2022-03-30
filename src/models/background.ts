@@ -5,7 +5,7 @@ import { sendMessageToTab } from '~/models/message_sender'
 type HandleMessage = (
   message: MessageObject,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (response: boolean) => void
+  sendResponse: (error: Error | null) => void
 ) => boolean
 
 const handleMessage: HandleMessage = (messageObject, sender, sendResponse) => {
@@ -15,12 +15,10 @@ const handleMessage: HandleMessage = (messageObject, sender, sendResponse) => {
         .then(getActiveTab)
         .then(activeTab => sendMessageToTab(messageObject, activeTab))
         .then(sendResponse)
-        .catch(error => {
-          throw error
-        })
+        .catch(sendResponse)
       break
     default:
-      throw new Error('InvalidMessageTypeError')
+      sendResponse(new Error('InvalidMessageTypeError'))
   }
   // https://stackoverflow.com/a/71520230/18535330
   return true

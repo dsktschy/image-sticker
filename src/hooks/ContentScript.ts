@@ -7,10 +7,10 @@ import {
 import { useStickerObjectListContext } from '~/contexts/StickerObjectList'
 import {
   initializeContentScript,
-  HandlePopupClickedMessageCallback,
   HandleDroppedOnPopupMessageCallback
 } from '~/models/content_script'
 import { readFileList } from '~/models/file_reader'
+import { noop } from '~/models/noop'
 
 type UseContentScript = () => {
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
@@ -25,12 +25,8 @@ export const useContentScript: UseContentScript = () => {
     noClick: true,
     noDrag: true,
     noKeyboard: true,
-    onDrop: readFileList
+    onDrop: readFileList.bind(null, noop)
   })
-
-  const noop = useCallback<HandlePopupClickedMessageCallback>(() => {
-    // No operation
-  }, [])
 
   const addStickerObject = useCallback<HandleDroppedOnPopupMessageCallback>(
     stickerObject => {
@@ -41,7 +37,7 @@ export const useContentScript: UseContentScript = () => {
 
   useEffect(() => {
     return initializeContentScript(open, noop, addStickerObject)
-  }, [addStickerObject, open, noop])
+  }, [addStickerObject, open])
 
   return {
     getInputProps,

@@ -1,7 +1,8 @@
+import { CustomError } from '~/lib/CustomError'
 import { createDroppedOnPopupMessageObject } from '~/lib/DroppedOnPopupMessageObject'
 import { sendMessageToBackground } from '~/models/message_sender'
 
-export type HandleLoadCallback = (error: Error | null) => void
+export type HandleLoadCallback = (error: CustomError | null) => void
 
 type CreateHandleLoad = (
   handleLoadCallback: HandleLoadCallback
@@ -11,12 +12,12 @@ const createHandleLoad: CreateHandleLoad = handleLoadCallback => ({
   target
 }) => {
   if (!target) {
-    handleLoadCallback(new Error('FileLoadingError'))
+    handleLoadCallback(new CustomError('FileLoadingError', false, true))
     return
   }
   const { result } = target
   if (typeof result !== 'string') {
-    handleLoadCallback(new Error('FileDataURLError'))
+    handleLoadCallback(new CustomError('FileDataURLError', false, false))
     return
   }
   const droppedOnPopupMessageObject = createDroppedOnPopupMessageObject(result)
@@ -33,7 +34,7 @@ type ReadFileList = (
 
 export const readFileList: ReadFileList = (handleLoadCallback, fileList) => {
   if (typeof FileReader === 'undefined')
-    handleLoadCallback(new Error('NoFileReaderError'))
+    handleLoadCallback(new CustomError('NoFileReaderError', false, true))
   for (const file of Array.from(fileList)) {
     // https://stackoverflow.com/questions/24843508/
     const fileReader = new FileReader()

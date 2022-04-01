@@ -1,3 +1,4 @@
+import { CustomError } from '~/lib/CustomError'
 import { DroppedOnPopupMessageObject } from '~/lib/DroppedOnPopupMessageObject'
 import { MessageObject } from '~/lib/MessageObject'
 import { PopupClickedMessageObject } from '~/lib/PopupClickedMessageObject'
@@ -12,7 +13,7 @@ type HandlePopupClickedMessageCallback = () => void
 
 type HandlePopupClickedMessage = (
   popupClickedMessageObject: PopupClickedMessageObject
-) => Promise<Error | null>
+) => Promise<CustomError | null>
 
 type CreateHandlePopupClickedMessage = (
   openFileDialog: () => void,
@@ -27,8 +28,10 @@ const createHandlePopupClickedMessage: CreateHandlePopupClickedMessage = (
     openFileDialog()
     handlePopupClickedMessageCallback()
   } catch (error) {
-    if (error instanceof Error) return Promise.resolve(error)
-    return Promise.resolve(new Error('HandlePopupClickedMessageError'))
+    if (error instanceof CustomError) return Promise.resolve(error)
+    return Promise.resolve(
+      new CustomError('HandlePopupClickedMessageError', false, false)
+    )
   }
   return Promise.resolve(null)
 }
@@ -39,7 +42,7 @@ export type HandleDroppedOnPopupMessageCallback = (
 
 type HandleDroppedOnPopupMessage = (
   droppedOnPopupMessageObject: DroppedOnPopupMessageObject
-) => Promise<Error | null>
+) => Promise<CustomError | null>
 
 type CreateHandleDroppedOnPopupMessage = (
   handleDroppedOnPopupMessageCallback: HandleDroppedOnPopupMessageCallback
@@ -52,15 +55,17 @@ const createHandleDroppedOnPopupMessage: CreateHandleDroppedOnPopupMessage = han
     const stickerObject = createStickerObject(payload)
     handleDroppedOnPopupMessageCallback(stickerObject)
   } catch (error) {
-    if (error instanceof Error) return Promise.resolve(error)
-    return Promise.resolve(new Error('HandleDroppedOnPopupMessageError'))
+    if (error instanceof CustomError) return Promise.resolve(error)
+    return Promise.resolve(
+      new CustomError('HandleDroppedOnPopupMessageError', true)
+    )
   }
   return Promise.resolve(null)
 }
 
 type CreateSendResponseToPopupClickedMessage = (
-  error: Error | null,
-  sendResponse: (error: Error | null) => void
+  error: CustomError | null,
+  sendResponse: (error: CustomError | null) => void
 ) => void
 
 const createSendResponseToPopupClickedMessage: CreateSendResponseToPopupClickedMessage = (
@@ -78,7 +83,7 @@ const createSendResponseToPopupClickedMessage: CreateSendResponseToPopupClickedM
 type HandleMessage = (
   message: MessageObject,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (error: Error | null) => void
+  sendResponse: (error: CustomError | null) => void
 ) => boolean
 
 type CreateHandleMessage = (
@@ -108,7 +113,7 @@ const createHandleMessage: CreateHandleMessage = (
         .catch(sendResponse)
       break
     default:
-      sendResponse(new Error('InvalidMessageTypeError'))
+      sendResponse(new CustomError('InvalidMessageTypeError', true))
   }
   // https://stackoverflow.com/a/71520230/18535330
   return true

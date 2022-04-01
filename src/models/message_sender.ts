@@ -1,3 +1,4 @@
+import { CustomError } from '~/lib/CustomError'
 import { MessageObject } from '~/lib/MessageObject'
 
 type TabsSendMessage = <M, R>(tabId: number, messageObject: M) => Promise<R>
@@ -10,14 +11,15 @@ const tabsSendMessage: TabsSendMessage = (tabId, messageObject) =>
 type SendMessageToTab = (
   messageObject: MessageObject,
   tab: chrome.tabs.Tab
-) => Promise<Error | null>
+) => Promise<CustomError | null>
 
 export const sendMessageToTab: SendMessageToTab = async (
   messageObject,
   tab
 ) => {
-  if (typeof tab.id === 'undefined') return new Error('NoTabIdError')
-  const error = await tabsSendMessage<MessageObject, Error | null>(
+  if (typeof tab.id === 'undefined')
+    return new CustomError('NoTabIdError', false, true)
+  const error = await tabsSendMessage<MessageObject, CustomError | null>(
     tab.id,
     messageObject
   )
@@ -33,10 +35,10 @@ const runtimeSendMessage: RuntimeSendMessage = messageObject =>
 
 type SendMessageToBackground = (
   messageObject: MessageObject
-) => Promise<Error | null>
+) => Promise<CustomError | null>
 
 export const sendMessageToBackground: SendMessageToBackground = async messageObject => {
-  const error = await runtimeSendMessage<MessageObject, Error | null>(
+  const error = await runtimeSendMessage<MessageObject, CustomError | null>(
     messageObject
   )
   return error

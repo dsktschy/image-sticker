@@ -1,3 +1,4 @@
+import { CustomError } from '~/lib/CustomError'
 import { createPopupClickedMessageObject } from '~/lib/PopupClickedMessageObject'
 import { getActiveTab } from '~/models/tab_getter'
 import { sendMessageToTab } from '~/models/message_sender'
@@ -9,12 +10,11 @@ type Languages = {
 export const languages: Languages = {
   textNoError: chrome.i18n.getMessage('defaultPopupTextNoError'),
   textError: chrome.i18n.getMessage('defaultPopupTextError'),
-  textNotAvailablePageError: chrome.i18n.getMessage(
-    'defaultPopupTextNotAvailablePageError'
-  )
+  textUpdatingError: chrome.i18n.getMessage('defaultPopupTextUpdatingError'),
+  textReopeningError: chrome.i18n.getMessage('defaultPopupTextReopeningError')
 }
 
-type HandleRecieveResponse = (error: Error | null) => void
+type HandleRecieveResponse = (error: CustomError | null) => void
 
 type SendPopupClickedMessageToContentScript = (
   handleRecieveResponse: HandleRecieveResponse
@@ -30,11 +30,14 @@ export const sendPopupClickedMessageToContentScript: SendPopupClickedMessageToCo
     .catch(handleRecieveResponse)
 }
 
-type ExecuteContentScript = (tab: chrome.tabs.Tab) => Promise<Error | null>
+type ExecuteContentScript = (
+  tab: chrome.tabs.Tab
+) => Promise<CustomError | null>
 
 const executeContentScript: ExecuteContentScript = async tab => {
   const tabId = tab.id
-  if (typeof tabId === 'undefined') return new Error('NoTabIdError')
+  if (typeof tabId === 'undefined')
+    return new CustomError('NoTabIdError', false, true)
   const [{ result }] = await chrome.scripting.executeScript({
     target: { tabId },
     func: () => !!document.getElementById('imgstckr')

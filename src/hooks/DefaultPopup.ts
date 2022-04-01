@@ -29,10 +29,11 @@ export const useDefaultPopup: UseDefaultPopup = () => {
 
   const updateState = useCallback<HandleLoadCallback>(error => {
     setReady(true)
-    setOnAvailablePage(!error)
-    let languageKey = 'text' + (error ? error.message : 'NoError')
-    if (!(languageKey in languages)) languageKey = 'textError'
-    setText(languages[languageKey])
+    setOnAvailablePage(!error?.reopening)
+    if (!error) setText(languages['textNoError'])
+    else if (error.updating) setText(languages['textUpdatingError'])
+    else if (error.reopening) setText(languages['textReopeningError'])
+    else setText(languages['textError'])
   }, [])
 
   const { getInputProps, getRootProps } = useDropzone({

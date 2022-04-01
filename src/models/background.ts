@@ -1,3 +1,4 @@
+import { CustomError } from '~/lib/CustomError'
 import { MessageObject } from '~/lib/MessageObject'
 import { getActiveTab } from '~/models/tab_getter'
 import { sendMessageToTab } from '~/models/message_sender'
@@ -5,7 +6,7 @@ import { sendMessageToTab } from '~/models/message_sender'
 type HandleMessage = (
   message: MessageObject,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (error: Error | null) => void
+  sendResponse: (error: CustomError | null) => void
 ) => boolean
 
 const handleMessage: HandleMessage = (messageObject, sender, sendResponse) => {
@@ -18,7 +19,7 @@ const handleMessage: HandleMessage = (messageObject, sender, sendResponse) => {
         .catch(sendResponse)
       break
     default:
-      sendResponse(new Error('InvalidMessageTypeError'))
+      sendResponse(new CustomError('InvalidMessageTypeError', true))
   }
   // https://stackoverflow.com/a/71520230/18535330
   return true

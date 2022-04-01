@@ -5,6 +5,7 @@ import React, {
   useReducer,
   useContext
 } from 'react'
+import { CustomError } from '~/lib/CustomError'
 import { StickerObject } from '~/lib/StickerObject'
 import {
   addToStickerObjectList,
@@ -23,7 +24,7 @@ const StickerObjectListContext = createContext<Value | null>(null)
 
 export const useStickerObjectListContext = (): Value => {
   const value = useContext(StickerObjectListContext)
-  if (!value) throw new Error('NonConsumerError')
+  if (!value) throw new CustomError('NonConsumerError', true)
   return value
 }
 
@@ -39,7 +40,7 @@ const stickerObjectListReducer = (
     case 'BRING_TO_FRONT':
       return bringToFrontOfStickerObjectList(stickerObjectList, payload)
     default:
-      throw new Error('InvalidActionTypeError')
+      throw new CustomError('InvalidActionTypeError', true)
   }
 }
 

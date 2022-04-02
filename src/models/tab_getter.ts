@@ -7,7 +7,7 @@ export const getActiveTab: GetActiveTab = async () => {
     active: true,
     currentWindow: true
   })
-  if (!tabList.length) throw new CustomError('NoActiveTabError', false, true)
+  if (!tabList.length) throw new CustomError('NoActiveTabError')
   // Currently, active tab should never be more than one
   return tabList[0]
 }

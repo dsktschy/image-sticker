@@ -17,8 +17,7 @@ export const sendMessageToTab: SendMessageToTab = async (
   messageObject,
   tab
 ) => {
-  if (typeof tab.id === 'undefined')
-    return new CustomError('NoTabIdError', false, true)
+  if (typeof tab.id === 'undefined') return new CustomError('NoTabIdError')
   const error = await tabsSendMessage<MessageObject, CustomError | null>(
     tab.id,
     messageObject

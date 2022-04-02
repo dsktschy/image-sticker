@@ -15,7 +15,7 @@ type UseDefaultPopup = () => {
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
   onAvailablePage: boolean
-  openContentScriptFileDialog: () => void
+  tryOpeningContentScriptFileDialog: () => void
   ready: boolean
   text: string
 }
@@ -28,12 +28,15 @@ export const useDefaultPopup: UseDefaultPopup = () => {
   const [text, setText] = useState('')
 
   const updateState = useCallback<HandleLoadCallback>(error => {
+    if (error) console.error(error)
     setReady(true)
-    setOnAvailablePage(!error?.reopening)
-    if (!error) setText(languages['textNoError'])
-    else if (error.updating) setText(languages['textUpdatingError'])
-    else if (error.reopening) setText(languages['textReopeningError'])
-    else setText(languages['textError'])
+    const notAvailablePageError = error?.name === 'NotAvailablePageError'
+    setOnAvailablePage(!notAvailablePageError)
+    let languageKey = 'textNoError'
+    if (notAvailablePageError) languageKey = 'textNotAvailablePageError'
+    // Todo: Show message for NoActiveTabError on droppedOnPopup event
+    // It is occured by developer tool of default_popup
+    setText(languages[languageKey])
   }, [])
 
   const { getInputProps, getRootProps } = useDropzone({
@@ -43,9 +46,10 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     onDrop: readFileList.bind(null, updateState)
   })
 
-  const openContentScriptFileDialog = useCallback(() => {
+  const tryOpeningContentScriptFileDialog = useCallback(() => {
+    if (!onAvailablePage) return
     sendPopupClickedMessageToContentScript(updateState)
-  }, [updateState])
+  }, [onAvailablePage, updateState])
 
   useEffect(() => {
     return initializeDefaultPopup(updateState)
@@ -55,7 +59,7 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     getInputProps,
     getRootProps,
     onAvailablePage,
-    openContentScriptFileDialog,
+    tryOpeningContentScriptFileDialog,
     ready,
     text
   }

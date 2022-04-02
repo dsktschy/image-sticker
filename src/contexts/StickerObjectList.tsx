@@ -24,7 +24,7 @@ const StickerObjectListContext = createContext<Value | null>(null)
 
 export const useStickerObjectListContext = (): Value => {
   const value = useContext(StickerObjectListContext)
-  if (!value) throw new CustomError('NonConsumerError', true)
+  if (!value) throw new CustomError('NonConsumerError')
   return value
 }
 
@@ -40,7 +40,7 @@ const stickerObjectListReducer = (
     case 'BRING_TO_FRONT':
       return bringToFrontOfStickerObjectList(stickerObjectList, payload)
     default:
-      throw new CustomError('InvalidActionTypeError', true)
+      throw new CustomError('InvalidActionTypeError')
   }
 }
 

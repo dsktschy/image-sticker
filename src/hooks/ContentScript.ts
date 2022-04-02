@@ -9,7 +9,7 @@ import {
   initializeContentScript,
   HandleDroppedOnPopupMessageCallback
 } from '~/models/content_script'
-import { readFileList } from '~/models/file_reader'
+import { HandleLoadCallback, readFileList } from '~/models/file_reader'
 import { noop } from '~/models/noop'
 
 type UseContentScript = () => {
@@ -20,12 +20,16 @@ type UseContentScript = () => {
 export const useContentScript: UseContentScript = () => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
+  const tryLoggingError = useCallback<HandleLoadCallback>(error => {
+    if (error) console.error(error)
+  }, [])
+
   const { getInputProps, getRootProps, open } = useDropzone({
     accept: '.png,.jpg,.jpeg,.gif,.svg',
     noClick: true,
     noDrag: true,
     noKeyboard: true,
-    onDrop: readFileList.bind(null, noop)
+    onDrop: readFileList.bind(null, tryLoggingError)
   })
 
   const addStickerObject = useCallback<HandleDroppedOnPopupMessageCallback>(

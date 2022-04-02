@@ -29,9 +29,7 @@ const createHandlePopupClickedMessage: CreateHandlePopupClickedMessage = (
     handlePopupClickedMessageCallback()
   } catch (error) {
     if (error instanceof CustomError) return Promise.resolve(error)
-    return Promise.resolve(
-      new CustomError('HandlePopupClickedMessageError', false, false)
-    )
+    return Promise.resolve(new CustomError('HandlePopupClickedMessageError'))
   }
   return Promise.resolve(null)
 }
@@ -56,28 +54,9 @@ const createHandleDroppedOnPopupMessage: CreateHandleDroppedOnPopupMessage = han
     handleDroppedOnPopupMessageCallback(stickerObject)
   } catch (error) {
     if (error instanceof CustomError) return Promise.resolve(error)
-    return Promise.resolve(
-      new CustomError('HandleDroppedOnPopupMessageError', true)
-    )
+    return Promise.resolve(new CustomError('HandleDroppedOnPopupMessageError'))
   }
   return Promise.resolve(null)
-}
-
-type CreateSendResponseToPopupClickedMessage = (
-  error: CustomError | null,
-  sendResponse: (error: CustomError | null) => void
-) => void
-
-const createSendResponseToPopupClickedMessage: CreateSendResponseToPopupClickedMessage = (
-  error,
-  sendResponse
-) => {
-  const runtimeOnMessage = chrome.runtime.onMessage
-  const handleMessage = () => {
-    runtimeOnMessage.removeListener(handleMessage)
-    sendResponse(error)
-  }
-  runtimeOnMessage.addListener(handleMessage)
 }
 
 type HandleMessage = (
@@ -99,12 +78,8 @@ const createHandleMessage: CreateHandleMessage = (
     case 'popupClicked':
       Promise.resolve()
         .then(() => handlePopupClickedMessage(messageObject))
-        .then(error =>
-          createSendResponseToPopupClickedMessage(error, sendResponse)
-        )
-        .catch(error =>
-          createSendResponseToPopupClickedMessage(error, sendResponse)
-        )
+        .then(sendResponse)
+        .catch(sendResponse)
       break
     case 'droppedOnPopup':
       Promise.resolve()
@@ -113,7 +88,7 @@ const createHandleMessage: CreateHandleMessage = (
         .catch(sendResponse)
       break
     default:
-      sendResponse(new CustomError('InvalidMessageTypeError', true))
+      sendResponse(new CustomError('InvalidMessageTypeError'))
   }
   // https://stackoverflow.com/a/71520230/18535330
   return true

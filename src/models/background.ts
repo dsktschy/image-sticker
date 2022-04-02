@@ -19,7 +19,7 @@ const handleMessage: HandleMessage = (messageObject, sender, sendResponse) => {
         .catch(sendResponse)
       break
     default:
-      sendResponse(new CustomError('InvalidMessageTypeError', true))
+      sendResponse(new CustomError('InvalidMessageTypeError'))
   }
   // https://stackoverflow.com/a/71520230/18535330
   return true

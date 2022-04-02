@@ -11,16 +11,8 @@
     "message": "Drop images here\nor\nClick to select images",
     "description": "Information text in default_popup when no error"
   },
-  "defaultPopupTextError": {
-    "message": "An error has occurred\nTry again",
-    "description": "Information text in default_popup when neither updating extension nor reopening default_popup is required"
-  },
-  "defaultPopupTextUpdatingError": {
-    "message": "An error has occurred\nTry updating extension",
-    "description": "Information text in default_popup when updating extension is required"
-  },
-  "defaultPopupTextReopeningError": {
-    "message": "An error has occurred\nTry reopening popup",
-    "description": "Information text in default_popup when reopening default_popup is required"
+  "defaultPopupTextNotAvailablePageError": {
+    "message": "Not available on this page",
+    "description": "Information text in default_popup when is opened on not available page"
   }
 }

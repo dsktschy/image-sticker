@@ -41,10 +41,7 @@ const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
           <input
             {...getInputProps({ disabled, id: 'imgstckr-DefaultPopup__input' })}
           />
-          <p
-            className={`${generatedClassName}__text`}
-            {...(disabled ? {} : { onClick })}
-          >
+          <p className={`${generatedClassName}__text`} onClick={onClick}>
             {text}
           </p>
         </>
@@ -85,7 +82,7 @@ const DefaultPopup: DefaultPopup = () => {
     getInputProps,
     getRootProps,
     onAvailablePage,
-    openContentScriptFileDialog,
+    tryOpeningContentScriptFileDialog,
     ready,
     text
   } = useDefaultPopup()
@@ -95,7 +92,7 @@ const DefaultPopup: DefaultPopup = () => {
       disabled={!onAvailablePage}
       getInputProps={getInputProps}
       getRootProps={getRootProps}
-      onClick={openContentScriptFileDialog}
+      onClick={tryOpeningContentScriptFileDialog}
       ready={ready}
       text={text}
     />

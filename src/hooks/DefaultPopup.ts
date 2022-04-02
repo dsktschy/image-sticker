@@ -28,9 +28,11 @@ export const useDefaultPopup: UseDefaultPopup = () => {
   const [text, setText] = useState('')
 
   const updateState = useCallback<HandleLoadCallback>(error => {
-    if (error) console.error(error)
+    // Error received from sendMessage is not instance of Error
+    // Make sure that error is Error instance to make error message in console prettier
+    if (error) console.error(new Error(error.message))
     setReady(true)
-    const notAvailablePageError = error?.name === 'NotAvailablePageError'
+    const notAvailablePageError = error?.message === 'NotAvailablePageError'
     setOnAvailablePage(!notAvailablePageError)
     let languageKey = 'textNoError'
     if (notAvailablePageError) languageKey = 'textNotAvailablePageError'

@@ -21,7 +21,9 @@ export const useContentScript: UseContentScript = () => {
   const [, stickerObjectListDispatch] = useStickerObjectListContext()
 
   const tryLoggingError = useCallback<HandleLoadCallback>(error => {
-    if (error) console.error(error)
+    // Error received from sendMessage is not instance of Error
+    // Make sure that error is Error instance to make error message in console prettier
+    if (error) console.error(new Error(error.message))
   }, [])
 
   const { getInputProps, getRootProps, open } = useDropzone({

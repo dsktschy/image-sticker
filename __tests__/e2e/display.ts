@@ -48,19 +48,16 @@ describe('E2E tests to see whether images are displayed correctly', () => {
       `chrome-extension://${extensionId}/default_popup.html`,
       { waitUntil: 'load' }
     )
-  })
 
-  beforeEach(async () => {
-    if (!browser) throw new Error('NoBrowser')
     contentPage = await browser.newPage()
     if (!contentPage) throw new Error('NoContentPage')
     await contentPage.goto('https://google.com', { waitUntil: 'load' })
     await contentPage.bringToFront()
   })
 
-  afterEach(async () => {
+  beforeEach(async () => {
     if (!contentPage) throw new Error('NoContentPage')
-    await contentPage.close()
+    await contentPage.reload({ waitUntil: 'load' })
   })
 
   afterAll(async () => {

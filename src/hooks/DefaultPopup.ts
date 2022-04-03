@@ -10,11 +10,11 @@ import {
   sendPopupClickedMessageToContentScript
 } from '~/models/default_popup'
 import { HandleLoadCallback, readFileList } from '~/models/file_reader'
+import { noop } from '~/models/noop'
 
 type UseDefaultPopup = () => {
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
-  onAvailablePage: boolean
   tryOpeningContentScriptFileDialog: () => void
   ready: boolean
   text: string
@@ -23,7 +23,7 @@ type UseDefaultPopup = () => {
 export const useDefaultPopup: UseDefaultPopup = () => {
   const [ready, setReady] = useState(false)
 
-  const [onAvailablePage, setOnAvailablePage] = useState(false)
+  const [onUnavailablePage, setOnUnavailablePage] = useState(false)
 
   const [text, setText] = useState('')
 
@@ -32,10 +32,10 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     // Make sure that error is Error instance to make error message in console prettier
     if (error) console.error(new Error(error.message))
     setReady(true)
-    const notAvailablePageError = error?.message === 'NotAvailablePageError'
-    setOnAvailablePage(!notAvailablePageError)
+    const unavailablePageError = error?.message === 'UnavailablePageError'
+    setOnUnavailablePage(unavailablePageError)
     let languageKey = 'textNoError'
-    if (notAvailablePageError) languageKey = 'textNotAvailablePageError'
+    if (unavailablePageError) languageKey = 'textUnavailablePageError'
     // Todo: Show message for NoActiveTabError on droppedOnPopup event
     // It is occured by developer tool of default_popup
     setText(languages[languageKey])
@@ -45,13 +45,13 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     accept: '.png,.jpg,.jpeg,.gif,.svg',
     noClick: true,
     noKeyboard: true,
-    onDrop: readFileList.bind(null, updateState)
+    onDrop: onUnavailablePage ? noop : readFileList.bind(null, updateState)
   })
 
   const tryOpeningContentScriptFileDialog = useCallback(() => {
-    if (!onAvailablePage) return
+    if (onUnavailablePage) return
     sendPopupClickedMessageToContentScript(updateState)
-  }, [onAvailablePage, updateState])
+  }, [onUnavailablePage, updateState])
 
   useEffect(() => {
     return initializeDefaultPopup(updateState)
@@ -60,7 +60,6 @@ export const useDefaultPopup: UseDefaultPopup = () => {
   return {
     getInputProps,
     getRootProps,
-    onAvailablePage,
     tryOpeningContentScriptFileDialog,
     ready,
     text

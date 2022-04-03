@@ -11,8 +11,8 @@
     "message": "Drop images here\nor\nClick to select images",
     "description": "Information text in default_popup when no error"
   },
-  "defaultPopupTextNotAvailablePageError": {
-    "message": "Not available on this page",
-    "description": "Information text in default_popup when is opened on not available page"
+  "defaultPopupTextUnavailablePageError": {
+    "message": "Unavailable on this page",
+    "description": "Information text in default_popup when is opened on unavailable page"
   }
 }

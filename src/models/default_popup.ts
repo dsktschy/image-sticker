@@ -9,8 +9,8 @@ type Languages = {
 
 export const languages: Languages = {
   textNoError: chrome.i18n.getMessage('defaultPopupTextNoError'),
-  textNotAvailablePageError: chrome.i18n.getMessage(
-    'defaultPopupTextNotAvailablePageError'
+  textUnavailablePageError: chrome.i18n.getMessage(
+    'defaultPopupTextUnavailablePageError'
   )
 }
 
@@ -44,7 +44,12 @@ const executeContentScript: ExecuteContentScript = async tab => {
     })
     if (result) return null
   } catch (error) {
-    throw new CustomError('NotAvailablePageError')
+    // Distinguish between unavailable page error and other errors for test
+    const message =
+      error instanceof Error && error.message.startsWith('Cannot access')
+        ? 'UnavailablePageError'
+        : 'ExecuteContentScriptError'
+    throw new CustomError(message)
   }
   await chrome.scripting.executeScript({
     target: { tabId },

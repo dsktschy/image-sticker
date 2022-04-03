@@ -5,7 +5,6 @@ import { useDefaultPopup } from '~/hooks/DefaultPopup'
 
 type PresentationalDefaultPopup = FC<{
   className?: string
-  disabled: boolean
   generatedClassName?: string
   getInputProps: (props?: DropzoneInputProps) => DropzoneInputProps
   getRootProps: (props?: DropzoneRootProps) => DropzoneRootProps
@@ -17,7 +16,6 @@ type PresentationalDefaultPopup = FC<{
 const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
   ({
     className = '',
-    disabled,
     generatedClassName = className.split(' ')[1],
     getInputProps,
     getRootProps,
@@ -38,9 +36,7 @@ const PresentationalDefaultPopup = styled<PresentationalDefaultPopup>(
       </svg>
       {ready && (
         <>
-          <input
-            {...getInputProps({ disabled, id: 'imgstckr-DefaultPopup__input' })}
-          />
+          <input {...getInputProps({ id: 'imgstckr-DefaultPopup__input' })} />
           <p className={`${generatedClassName}__text`} onClick={onClick}>
             {text}
           </p>
@@ -81,7 +77,6 @@ const DefaultPopup: DefaultPopup = () => {
   const {
     getInputProps,
     getRootProps,
-    onAvailablePage,
     tryOpeningContentScriptFileDialog,
     ready,
     text
@@ -89,7 +84,6 @@ const DefaultPopup: DefaultPopup = () => {
 
   return (
     <PresentationalDefaultPopup
-      disabled={!onAvailablePage}
       getInputProps={getInputProps}
       getRootProps={getRootProps}
       onClick={tryOpeningContentScriptFileDialog}

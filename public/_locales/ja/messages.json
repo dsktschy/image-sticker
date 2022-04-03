@@ -11,7 +11,7 @@
     "message": "ここに画像をドロップ\nまたは\nここをクリックで画像を選択",
     "description": "問題が発生していない状態で、default_popupに表示される案内文"
   },
-  "defaultPopupTextNotAvailablePageError": {
+  "defaultPopupTextUnavailablePageError": {
     "message": "このページでは利用できません",
     "description": "非対応ページ上で開いた場合に、default_popupに表示される案内文"
   }

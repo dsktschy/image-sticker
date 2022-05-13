@@ -14,20 +14,20 @@ export const languages: Languages = {
   )
 }
 
-type HandleRecieveResponse = (error: CustomError | null) => void
+type HandleReceiveResponse = (error: CustomError | null) => void
 
 type SendPopupClickedMessageToContentScript = (
-  handleRecieveResponse: HandleRecieveResponse
+  handleReceiveResponse: HandleReceiveResponse
 ) => void
 
-export const sendPopupClickedMessageToContentScript: SendPopupClickedMessageToContentScript = handleRecieveResponse => {
+export const sendPopupClickedMessageToContentScript: SendPopupClickedMessageToContentScript = handleReceiveResponse => {
   Promise.resolve()
     .then(getActiveTab)
     .then(activeTab =>
       sendMessageToTab(createPopupClickedMessageObject(), activeTab)
     )
-    .then(handleRecieveResponse)
-    .catch(handleRecieveResponse)
+    .then(handleReceiveResponse)
+    .catch(handleReceiveResponse)
 }
 
 type ExecuteContentScript = (
@@ -59,15 +59,15 @@ const executeContentScript: ExecuteContentScript = async tab => {
 }
 
 type InitializeDefaultPopup = (
-  handleRecieveResponse: HandleRecieveResponse
+  handleReceiveResponse: HandleReceiveResponse
 ) => () => void
 
-export const initializeDefaultPopup: InitializeDefaultPopup = handleRecieveResponse => {
+export const initializeDefaultPopup: InitializeDefaultPopup = handleReceiveResponse => {
   Promise.resolve()
     .then(getActiveTab)
     .then(executeContentScript)
-    .then(handleRecieveResponse)
-    .catch(handleRecieveResponse)
+    .then(handleReceiveResponse)
+    .catch(handleReceiveResponse)
   return () => {
     // No events to destroy
   }

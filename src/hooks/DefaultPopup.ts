@@ -37,7 +37,7 @@ export const useDefaultPopup: UseDefaultPopup = () => {
     let languageKey = 'textNoError'
     if (unavailablePageError) languageKey = 'textUnavailablePageError'
     // Todo: Show message for NoActiveTabError on droppedOnPopup event
-    // It is occured by developer tool of default_popup
+    // It is occurred by developer tool of default_popup
     setText(languages[languageKey])
   }, [])
 
